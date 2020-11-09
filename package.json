@@ -1,0 +1,21 @@
+{
+  "name": "hoj-backend",
+  "version": "0.1.0",
+  "description": "Hydrogen OJ backend.",
+  "author": "Hydrogen OJ Team",
+  "repository": "https://github.com/hydrogen-oj/hoj-backend.git",
+  "license": "AGPL-3.0",
+  "scripts": {
+    "start": "egg-scripts start --title=egg-server-hoj-backend",
+    "stop": "egg-scripts stop --title=egg-server-hoj-backend",
+    "dev": "egg-bin dev",
+    "debug": "egg-bin debug"
+  },
+  "dependencies": {
+    "egg": "^2.29.1",
+    "typeorm": "^0.2.29"
+  },
+  "devDependencies": {
+    "egg-bin": "^4.15.0"
+  }
+}
