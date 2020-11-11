@@ -1,29 +1,84 @@
-import { Controller } from 'egg';
+import { Context, Controller } from 'egg';
 
 class AuthController extends Controller {
+    constructor(ctx: Context) {
+        super(ctx);
+    }
+
+    private validate(payload: any): boolean {
+        const reEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        //const rePhone = /^(\+86)(13[0-9]|145|147|15[0-3,5-9]|18[0,2,5-9])(\d{8})$/;
+        const reUsername = /^[a-zA-Z]+[a-zA-Z0-9_]$/;
+
+        if (payload.email && !reEmail.test(payload.email)) {
+            return false;
+        }
+        if (payload.username && !reUsername.test(payload.username)) {
+            return false;
+        }
+        return true;
+    }
+
     public async signup() {
         const { ctx } = this;
-        ctx.body = {
-            status: 200,
-            data: 'Welcome to Hydrogen OJ backend!'
-        };
+        const param = ctx.request.body;
+
+        if (!this.validate(param)) {
+            ctx.helper.failure(422, 'validation failed');
+        }
+
+        if (await ctx.service.user.findByEmail(param.email)) {
+            ctx.helper.response(1001, 'invalid email');
+        }
+        if (await ctx.service.user.findByUsername(param.username)) {
+            ctx.helper.response(1002, 'invalid username');
+        }
+
+        const user = await ctx.service.user.create({
+            username: param.username,
+            email: param.email,
+            password: param.password
+        });
+
+        if (user) {
+            ctx.helper.response(200, 'processed successfully');
+        }
+        else {
+            ctx.helper.failure(500, 'unknown server error');
+        }
     }
 
     public async signin() {
-        const { ctx } = this;
-        ctx.body = {
-            status: 200,
-            data: 'Welcome to Hydrogen OJ backend!'
-        };
+        const { ctx, app } = this;
+        const param = ctx.request.body;
 
+        if (!this.validate(param)) {
+            ctx.helper.failure(422, 'validation failed');
+        }
+
+        let user = await ctx.service.user.findByUsername(param.username);
+        if (!user) {
+            user = await ctx.service.user.findByEmail(param.email);
+            if (!user) {
+                ctx.helper.response(1003, 'incorrect name or password');
+            }
+        }
+        
+        const token = app.jwt.sign({
+            user_id: user.uid
+        }, app.config.jwt.secret);
+
+        user.last_login = ctx.helper.getTime();
+        await user.save();
+
+        ctx.helper.response(200, 'processed successfully', {
+            token: token
+        });
     }
 
     public async signout() {
         const { ctx } = this;
-        ctx.body = {
-            status: 200,
-            data: 'Welcome to Hydrogen OJ backend!'
-        };
+        ctx.helper.response(200, 'processed successfully');
     }
 }
 

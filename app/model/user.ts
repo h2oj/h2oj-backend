@@ -53,19 +53,19 @@ class User extends TypeORM.BaseEntity {
     @TypeORM.Column({ nullable: false, type: 'integer', default: 0 })
     follower: number;
 
-    static async fromUid(uid) : Promise<User> {
+    static async fromUid(uid: number) : Promise<User> {
         return User.findOne({
             where: { uid: uid }
         });
     }
 
-    static async fromName(name) : Promise<User> {
+    static async fromName(name: string) : Promise<User> {
         return User.findOne({
             where: { username: name }
         });
     }
 
-    static async fromEmail(email) : Promise<User> {
+    static async fromEmail(email: string) : Promise<User> {
         return User.findOne({
             where: { email: email }
         });

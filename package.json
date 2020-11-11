@@ -5,6 +5,10 @@
   "author": "Hydrogen OJ Team",
   "repository": "https://github.com/hydrogen-oj/hoj-backend.git",
   "license": "AGPL-3.0",
+  "egg": {
+    "typescript": true,
+    "declarations": true
+  },
   "scripts": {
     "start": "egg-scripts start --title=egg-server-hoj-backend",
     "stop": "egg-scripts stop --title=egg-server-hoj-backend",
@@ -12,10 +16,17 @@
     "debug": "egg-bin debug"
   },
   "dependencies": {
+    "crypto-js": "^4.0.0",
     "egg": "^2.29.1",
+    "egg-jwt": "^3.1.7",
+    "egg-ts-typeorm": "^1.1.12",
+    "mysql": "^2.18.1",
     "typeorm": "^0.2.29"
   },
   "devDependencies": {
-    "egg-bin": "^4.15.0"
+    "@types/crypto-js": "^4.0.1",
+    "egg-bin": "^4.15.0",
+    "egg-ts-helper": "^1.25.8",
+    "typescript": "^4.0.5"
   }
 }
