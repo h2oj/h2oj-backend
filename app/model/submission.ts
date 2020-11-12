@@ -1,7 +1,7 @@
 import * as TypeORM from 'typeorm';
 import { Model, SubmissionStatus } from './definition';
 import Problem from './problem';
-import SubmissionDetail from './submission-detail';
+import SubmissionDetail from './submission_detail';
 import User from './user';
 
 @TypeORM.Entity('submission')

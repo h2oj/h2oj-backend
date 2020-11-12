@@ -105,3 +105,7 @@ dist
 
 # EggJS temp file
 run/
+
+# TypeScript compile result
+app/**/*.js
+config/**/*.js

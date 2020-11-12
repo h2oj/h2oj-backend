@@ -7,13 +7,19 @@ export default (appInfo: EggAppInfo) => {
     config.middleware = [];
 
     config.jwt = {
-        secret: '76798669'
+        secret: 'HOJJWT'
     };
     
     config.security = {
         csrf: {
           enable: false,
-        }
+        },
+        domainWhiteList: ['http://localhost:8080']
+    };
+
+    config.cors = {
+        origin: '*',
+        allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
     };
 
     config.typeorm = {

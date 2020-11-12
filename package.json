@@ -10,15 +10,18 @@
     "declarations": true
   },
   "scripts": {
+    "ci": "yarn run cov && yarn run tsc",
     "start": "egg-scripts start --title=egg-server-hoj-backend",
     "stop": "egg-scripts stop --title=egg-server-hoj-backend",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
-    "cov": "egg-bin cov"
+    "cov": "egg-bin cov",
+    "clean": "ets clean"
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
     "egg": "^2.29.1",
+    "egg-cors": "^2.2.3",
     "egg-jwt": "^3.1.7",
     "egg-scripts": "^2.13.0",
     "egg-ts-typeorm": "^1.1.12",
