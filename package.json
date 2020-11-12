@@ -13,12 +13,14 @@
     "start": "egg-scripts start --title=egg-server-hoj-backend",
     "stop": "egg-scripts stop --title=egg-server-hoj-backend",
     "dev": "egg-bin dev",
-    "debug": "egg-bin debug"
+    "debug": "egg-bin debug",
+    "cov": "egg-bin cov"
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
     "egg": "^2.29.1",
     "egg-jwt": "^3.1.7",
+    "egg-scripts": "^2.13.0",
     "egg-ts-typeorm": "^1.1.12",
     "mysql": "^2.18.1",
     "typeorm": "^0.2.29"

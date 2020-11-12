@@ -9,6 +9,12 @@ export default (appInfo: EggAppInfo) => {
     config.jwt = {
         secret: '76798669'
     };
+    
+    config.security = {
+        csrf: {
+          enable: false,
+        }
+    };
 
     config.typeorm = {
         client: {

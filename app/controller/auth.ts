@@ -1,10 +1,7 @@
-import { Context, Controller } from 'egg';
+import { Controller } from 'egg';
+import CryptoJS from 'crypto-js';
 
 class AuthController extends Controller {
-    constructor(ctx: Context) {
-        super(ctx);
-    }
-
     private validate(payload: any): boolean {
         const reEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
         //const rePhone = /^(\+86)(13[0-9]|145|147|15[0-3,5-9]|18[0,2,5-9])(\d{8})$/;
@@ -25,13 +22,16 @@ class AuthController extends Controller {
 
         if (!this.validate(param)) {
             ctx.helper.failure(422, 'validation failed');
+            return;
         }
 
         if (await ctx.service.user.findByEmail(param.email)) {
             ctx.helper.response(1001, 'invalid email');
+            return;
         }
         if (await ctx.service.user.findByUsername(param.username)) {
             ctx.helper.response(1002, 'invalid username');
+            return;
         }
 
         const user = await ctx.service.user.create({
@@ -61,7 +61,14 @@ class AuthController extends Controller {
             user = await ctx.service.user.findByEmail(param.email);
             if (!user) {
                 ctx.helper.response(1003, 'incorrect name or password');
+                return;
             }
+        }
+
+        const password = CryptoJS.MD5(param.password + user.crypto_salt).toString();
+        if (password !== user.password) {
+            ctx.helper.response(1003,  'incorrect name or password');
+            return;
         }
         
         const token = app.jwt.sign({

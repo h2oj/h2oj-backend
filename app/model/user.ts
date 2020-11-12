@@ -1,7 +1,8 @@
 import * as TypeORM from 'typeorm';
+import { Model } from './definition';
 
 @TypeORM.Entity('user')
-class User extends TypeORM.BaseEntity {
+class User extends Model {
     @TypeORM.PrimaryGeneratedColumn()
     uid: number;
 

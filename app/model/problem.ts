@@ -1,9 +1,11 @@
 import * as TypeORM from 'typeorm';
+import { Model } from './definition';
+import ProblemContent from './problem_content';
 import User from './user';
 
 @TypeORM.Entity('problem')
-class Problem extends TypeORM.BaseEntity {
-    @TypeORM.PrimaryGeneratedColumn()
+class Problem extends Model {
+    @TypeORM.PrimaryColumn({ nullable: false, type: 'integer' })
     pid: number;
 
     @TypeORM.Column({ nullable: false, type: 'tinyint' })
@@ -32,6 +34,8 @@ class Problem extends TypeORM.BaseEntity {
 
     publisher?: User;
 
+    content?: ProblemContent;
+
     async loadRelatives() {
         await this.loadPublisher();
     }
@@ -39,6 +43,14 @@ class Problem extends TypeORM.BaseEntity {
     async loadPublisher() {
         if (!this.publisher && this.uid !== undefined) {
             this.publisher = await User.fromUid(this.uid);
+        }
+    }
+
+    async loadContent() {
+        if (!this.content) {
+            this.content = await ProblemContent.findOne({
+                where: { pid: this.pid }
+            });
         }
     }
 
