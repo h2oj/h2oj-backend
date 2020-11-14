@@ -7,20 +7,24 @@ class ProblemController extends Controller {
         const param = ctx.query;
         const page = param.page || 1;
         const each = param.each || 15;
-
+        const length = await ctx.repo.Problem.count();
         const problems = await ctx.repo.Problem.find({
             where: { is_public: 1 },
             skip: (page - 1) * each,
             take: each
         });
         
-        ctx.helper.response(200, 'processed successfully', problems.map((problem: Problem) => ({
-            pid: problem.pid,
-            title: problem.title,
-            difficulty: problem.difficulty,
-            ac_count: problem.ac_count,
-            submit_count: problem.submit_count
-        })));
+        ctx.helper.response(200, 'processed successfully', {
+            count: length,
+            page_count: Math.ceil(length / each),
+            problems: problems.map((problem: Problem) => ({
+                pid: problem.pid,
+                title: problem.title,
+                difficulty: problem.difficulty,
+                ac_count: problem.ac_count,
+                submit_count: problem.submit_count
+            }))
+        });
     }
 
     public async detail() {
