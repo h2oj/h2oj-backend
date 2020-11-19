@@ -6,6 +6,13 @@ interface ProblemSampleData {
     output: string;
 }
 
+interface ProblemContentData {
+    description: string;
+    input: string;
+    output: string;
+    constraint: string;
+}
+
 interface ProblemSampleDataSet extends Array<ProblemSampleData> {}
 
 @TypeORM.Entity('problem_content')
@@ -16,8 +23,8 @@ class ProblemContent extends Model {
     @TypeORM.Column({ nullable: false, type: 'integer' })
     pid: number;
 
-    @TypeORM.Column({ type: 'text' })
-    content: string;
+    @TypeORM.Column({ type: 'json' })
+    content: ProblemContentData;
 
     @TypeORM.Column({ type: 'json' })
     sample: ProblemSampleDataSet;

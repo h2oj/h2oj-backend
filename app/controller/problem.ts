@@ -7,12 +7,24 @@ class ProblemController extends Controller {
         const param = ctx.query;
         const page = param.page || 1;
         const each = param.each || 15;
-        const length = await ctx.repo.Problem.count();
-        const problems = await ctx.repo.Problem.find({
-            where: { is_public: 1 },
-            skip: (page - 1) * each,
-            take: each
-        });
+        const search = param.search;
+        let problems, length;
+        if (search) {
+            [problems, length] = await ctx.repo.Problem.createQueryBuilder()
+                .where('problem.title LIKE :param')
+                .where('problem.is_public == 1')
+                .setParameter('param', '%' + search + '%')
+                .skip((page - 1) * each)
+                .take(each)
+                .getManyAndCount();
+        }
+        else {
+            [problems, length] = await ctx.repo.Problem.findAndCount({
+                where: { is_public: 1 },
+                skip: (page - 1) * each,
+                take: each
+            });
+        }
         
         ctx.helper.response(200, 'processed successfully', {
             count: length,
@@ -54,7 +66,8 @@ class ProblemController extends Controller {
                 username: problem.publisher.username,
                 nickname: problem.publisher.nickname
             },
-            info: problem.content
+            content: problem.content.content,
+            sample: problem.content.sample
         });
     }
 }
