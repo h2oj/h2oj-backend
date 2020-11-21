@@ -70,6 +70,31 @@ class ProblemController extends Controller {
             sample: problem.content.sample
         });
     }
+
+    public async update() {
+        const { ctx } = this;
+        const param = ctx.request.body;
+
+        const problem = await ctx.repo.Problem.findOne({
+            where: { pid: param.pid }
+        });
+
+        if (!problem) {
+            ctx.helper.response(2002, 'no data');
+            return;
+        }
+
+        await problem.loadContent();
+
+        problem.difficulty = param.difficulty;
+        problem.content.content = param.content;
+        //problem.content.sample = param.sample;
+
+        await problem.content.save();
+        await problem.save();
+
+        ctx.helper.response(200, 'processed successfully');
+    }
 }
 
 export default ProblemController;
