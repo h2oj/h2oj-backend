@@ -1,5 +1,5 @@
 import { Controller } from 'egg';
-import Problem from '../model/problem';
+import Problem from '../model/Problem';
 
 class ProblemController extends Controller {
     public async list() {

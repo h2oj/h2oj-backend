@@ -1,6 +1,6 @@
 import { Service } from 'egg';
 import CryptoJS from 'crypto-js';
-import User from '../model/user';
+import User from '../model/User';
 
 class UserService extends Service {
     public async create(payload: any): Promise<User> {

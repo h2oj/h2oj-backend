@@ -35,5 +35,11 @@ export default (appInfo: EggAppInfo) => {
         }
     };
 
+    config.path = {
+        code: './data/code',
+        judge: './data/temp',
+        data: './data/problem'
+    };
+
     return config;
 };

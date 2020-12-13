@@ -109,3 +109,6 @@ run/
 # TypeScript compile result
 app/**/*.js
 config/**/*.js
+
+# Data
+data

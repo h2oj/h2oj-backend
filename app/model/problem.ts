@@ -1,7 +1,7 @@
 import * as TypeORM from 'typeorm';
 import { Model } from './definition';
-import ProblemContent from './problem_content';
-import User from './user';
+import ProblemContent from './ProblemContent';
+import User from './User';
 
 @TypeORM.Entity('problem')
 class Problem extends Model {

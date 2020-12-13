@@ -1,8 +1,8 @@
 import * as TypeORM from 'typeorm';
 import { Model, SubmissionStatus } from './definition';
-import Problem from './problem';
-import SubmissionDetail from './submission_detail';
-import User from './user';
+import Problem from './Problem';
+import SubmissionDetail from './SubmissionDetail';
+import User from './User';
 
 @TypeORM.Entity('submission')
 class Submission extends Model {
@@ -54,34 +54,6 @@ class Submission extends Model {
         if (!this.problem && this.pid) {
             this.problem = await Problem.fromPid(this.pid);
         }
-    }
-
-    async loadSubmissionDetails() {
-        if (!this.details) {
-            this.details = await SubmissionDetail.fromSid(this.sid);
-        }
-    }
-
-    /**
-     * Find a record from sid.
-     * @param {number} sid - Record id.
-     * @return {Promise<Submission>} Record.
-     */
-    static async fromSid(sid: number) : Promise<Submission> {
-        return Submission.findOne({
-            where: { sid: sid }
-        });
-    }
-
-    /**
-     * Find records from uid.
-     * @param {number} uid - User id.
-     * @return {Promise<Record[]>} Records.
-     */
-    static async fromUid(uid: number) : Promise<Submission[]> {
-        return Submission.find({
-            where: { uid: uid }
-        });
     }
 }
 
