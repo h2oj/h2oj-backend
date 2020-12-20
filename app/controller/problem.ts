@@ -61,13 +61,13 @@ class ProblemController extends Controller {
             difficulty: problem.difficulty,
             ac_count: problem.ac_count,
             submit_count: problem.submit_count,
+            content: problem.content.content,
+            sample: problem.content.sample,
             user: {
                 uid: problem.publisher.uid,
                 username: problem.publisher.username,
                 nickname: problem.publisher.nickname
-            },
-            content: problem.content.content,
-            sample: problem.content.sample
+            }
         });
     }
 

@@ -13,6 +13,7 @@
     "ci": "yarn run cov && yarn run tsc",
     "start": "egg-scripts start --title=egg-server-hoj-backend",
     "stop": "egg-scripts stop --title=egg-server-hoj-backend",
+    "start2": "yarn clean && yarn ci && yarn run start",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
     "cov": "egg-bin cov",

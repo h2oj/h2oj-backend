@@ -37,7 +37,7 @@ class Submission extends Model {
 
     problem?: Problem;
 
-    details?: SubmissionDetail[];
+    detail?: SubmissionDetail;
 
     async loadRelatives() {
         await this.loadUser();
@@ -53,6 +53,14 @@ class Submission extends Model {
     async loadProblem() {
         if (!this.problem && this.pid) {
             this.problem = await Problem.fromPid(this.pid);
+        }
+    }
+
+    async loadDetail() {
+        if (!this.detail && this.pid) {
+            this.detail = await SubmissionDetail.findOne({
+                where: { pid: this.pid }
+            });
         }
     }
 }
