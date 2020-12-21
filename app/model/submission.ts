@@ -57,9 +57,9 @@ class Submission extends Model {
     }
 
     async loadDetail() {
-        if (!this.detail && this.pid) {
+        if (!this.detail && this.sid) {
             this.detail = await SubmissionDetail.findOne({
-                where: { pid: this.pid }
+                where: { sid: this.sid }
             });
         }
     }
