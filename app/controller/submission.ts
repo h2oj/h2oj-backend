@@ -92,7 +92,6 @@ class SubmissionController extends Controller {
         const pid = param.pid;
 
         const submit_time = Math.floor(Number(new Date()) / 1000);
-
         if (!ctx.service.submission.checkLanguage(language)) {
             ctx.helper.response(5001, 'unavailable language');
             return;
@@ -128,7 +127,6 @@ class SubmissionController extends Controller {
             submission.total_time = result.total_time;
             submission.total_space = result.total_memory;
             submission.code_size = fs.statSync(filePath).size;
-            console.log(submission);
             await submission.save();
 
             const submissionDetail = await ctx.repo.SubmissionDetail.create();
