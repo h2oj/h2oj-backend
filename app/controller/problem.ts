@@ -86,6 +86,7 @@ class ProblemController extends Controller {
 
         await problem.loadContent();
 
+        problem.title = param.title;
         problem.difficulty = param.difficulty;
         problem.content.content = param.content;
         //problem.content.sample = param.sample;
