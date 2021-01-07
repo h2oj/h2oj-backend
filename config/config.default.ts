@@ -41,5 +41,9 @@ export default (appInfo: EggAppInfo) => {
         data: './data/problem'
     };
 
+    config.multipart = {
+        mode: 'file',
+    };
+
     return config;
 };

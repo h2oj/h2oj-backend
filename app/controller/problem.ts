@@ -1,5 +1,8 @@
 import { Controller } from 'egg';
 import Problem from '../model/Problem';
+import path from 'path';
+import fs from 'fs';
+import AdmZip from 'adm-zip';
 
 class ProblemController extends Controller {
     public async list() {
@@ -95,6 +98,35 @@ class ProblemController extends Controller {
         await problem.save();
 
         ctx.helper.response(200, 'processed successfully');
+    }
+
+    public async upload_data() {
+        const { ctx } = this;
+        const param = ctx.request.body;
+        const file = ctx.request.files[0];
+        const pid = param.pid;
+
+        const dataPath = path.join(ctx.app.config.path.data, pid);
+        if (!fs.existsSync(dataPath)) {
+            fs.mkdirSync(dataPath, { recursive: true });
+        }
+        fs.copyFileSync(file.filepath, path.join(dataPath, 'data.zip'));
+        const extractPath = path.join(dataPath, 'temp');
+        let zip = new AdmZip(file.filepath);
+        zip.extractAllTo(extractPath, true);
+        for (let file of fs.readdirSync(extractPath)) {
+            if (file === 'config.yml' || ['.in', '.out'].includes(path.extname(file))) {
+                fs.copyFileSync(path.join(extractPath, file), path.join(dataPath, path.basename(file)));
+            }
+        }
+        ctx.cleanupRequestFiles();
+        fs.rmdirSync(extractPath, { recursive: true });
+    
+        ctx.helper.response(200, 'processed successfully');
+    }
+
+    public async download_data() {
+
     }
 }
 

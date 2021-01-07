@@ -13,6 +13,10 @@ const plugin: EggPlugin = {
     typeorm: {
         enable: true,
         package: 'egg-ts-typeorm'
+    },
+    multipart: {
+        enable: true,
+        package: 'egg-multipart'
     }
 };
 

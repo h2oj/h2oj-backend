@@ -20,10 +20,13 @@
     "clean": "ets clean"
   },
   "dependencies": {
+    "@types/adm-zip": "^0.4.33",
+    "adm-zip": "^0.5.1",
     "crypto-js": "^4.0.0",
     "egg": "^2.29.1",
     "egg-cors": "^2.2.3",
     "egg-jwt": "^3.1.7",
+    "egg-multipart": "^2.10.3",
     "egg-scripts": "^2.13.0",
     "egg-ts-typeorm": "^1.1.12",
     "hoj-judger": "^0.1.0",
