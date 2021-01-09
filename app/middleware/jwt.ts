@@ -9,7 +9,7 @@ export default (options: EggAppConfig['jwt']): any => {
         }
         else {
             const decode = ctx.app.jwt.verify(auth, options.secret);
-            ctx.state.user = decode;
+            ctx.state.token = decode;
             await next();
         }
     };

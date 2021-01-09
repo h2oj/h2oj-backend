@@ -79,6 +79,9 @@ class AuthController extends Controller {
         await user.save();
 
         ctx.helper.response(200, 'processed successfully', {
+            username: user.username,
+            nickname: user.nickname,
+            uid: user.uid,
             token: token
         });
     }
