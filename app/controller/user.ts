@@ -30,7 +30,7 @@ class UserController extends Controller {
         const param = ctx.request.body;
 
         const user = await ctx.repo.User.findOne({
-            where: { uid: ctx.state.uid }
+            where: { uid: ctx.state.user_id }
         });
 
         if (!user) {
