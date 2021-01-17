@@ -16,6 +16,7 @@ class UserController extends Controller {
 
         ctx.helper.response(200, 'processed successfully', {
             uid: user.uid,
+            sex: user.sex,
             username: user.username,
             nickname: user.nickname,
             description: user.description,
@@ -42,10 +43,12 @@ class UserController extends Controller {
         if (param.nickname) user.nickname = param.nickname;
         if (param.description) user.description = param.description;
         if (param.information) user.information = param.information;
+        if (param.sex) user.sex = param.sex;
         await user.save();
 
         ctx.helper.response(200, 'processed successfully', {
             uid: user.uid,
+            sex: user.sex,
             username: user.username,
             nickname: user.nickname,
             description: user.description,
