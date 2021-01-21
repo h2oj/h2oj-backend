@@ -82,6 +82,7 @@ class AuthController extends Controller {
             username: user.username,
             nickname: user.nickname,
             uid: user.uid,
+            avatar: user.avatar,
             token: token
         });
     }
