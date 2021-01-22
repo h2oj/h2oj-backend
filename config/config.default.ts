@@ -38,7 +38,8 @@ export default (appInfo: EggAppInfo) => {
     config.path = {
         code: './data/code',
         judge: './data/temp',
-        data: './data/problem'
+        data: './data/problem',
+        captcha: './data/captcha'
     };
 
     config.multipart = {

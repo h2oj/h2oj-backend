@@ -20,7 +20,7 @@ class AuthController extends Controller {
         const { ctx } = this;
         const param = ctx.request.body;
 
-        if (!this.validate(param)) {
+        if (!ctx.state.captcha.verified || !this.validate(param)) {
             ctx.helper.failure(422, 'validation failed');
             return;
         }
@@ -36,6 +36,7 @@ class AuthController extends Controller {
 
         const user = await ctx.service.user.create({
             username: param.username,
+            nickname: param.nickname,
             email: param.email,
             password: param.password
         });

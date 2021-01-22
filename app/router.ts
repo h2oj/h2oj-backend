@@ -6,7 +6,7 @@ export default (app: Application) => {
 
     router.get('/test', controller.test.index);
     router.post('/auth/signin', controller.auth.signin);
-    router.post('/auth/signup', controller.auth.signup);
+    router.post('/auth/signup', jwt, controller.auth.signup);
     router.get('/auth/signout', jwt, controller.auth.signout);
 
     router.get('/problem/list', controller.problem.list);
@@ -21,4 +21,7 @@ export default (app: Application) => {
 
     router.get('/user/detail', controller.user.detail);
     router.post('/user/update', jwt, controller.user.update);
+
+    router.get('/captcha/get', controller.captcha.get);
+    router.post('/captcha/verify', jwt, controller.captcha.verify);
 };
