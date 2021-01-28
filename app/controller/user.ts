@@ -18,7 +18,7 @@ class UserController extends Controller {
             uid: user.uid,
             sex: user.sex,
             username: user.username,
-            nickname: user.nickname,
+            nickname: user.username,
             description: user.description,
             information: user.information,
             rating: user.rating,
