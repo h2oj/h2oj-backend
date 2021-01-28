@@ -112,3 +112,6 @@ config/**/*.js
 
 # Data
 data
+
+# Config
+config/config.default.ts
