@@ -9,6 +9,7 @@ class UserService extends Service {
         const salt = CryptoJS.lib.WordArray.random(8).toString();
 
         user.username = payload.username;
+        user.nickname = payload.username;
         user.password = CryptoJS.MD5(payload.password + salt).toString();
         user.crypto_salt = salt;
         user.email = payload.email;
