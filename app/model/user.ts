@@ -54,6 +54,12 @@ class User extends Model {
     @TypeORM.Column({ nullable: false, type: 'integer', default: 0 })
     follower: number;
 
+    @TypeORM.Column({ nullable: false, type: 'integer', default: 1 })
+    level: number;
+
+    @TypeORM.Column({ nullable: false, type: 'text' })
+    tag: string;
+
     static async fromUid(uid: number) : Promise<User> {
         return User.findOne({
             where: { uid: uid }
@@ -69,6 +75,20 @@ class User extends Model {
     static async fromEmail(email: string) : Promise<User> {
         return User.findOne({
             where: { email: email }
+        });
+    }
+
+    static async fromUidCheckPermission(uid: number, requestLevel: number) : Promise<boolean> {
+        const user = User.findOne({
+            where: { uid: uid }
+        });
+        return (await user).level >= requestLevel;
+    }
+
+    static async listUser(page: number, limit: number) : Promise<Array<User>> {
+        return User.find({
+            skip: page,
+            take: limit
         });
     }
 }

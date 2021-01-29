@@ -1,6 +1,45 @@
 import { Controller } from 'egg';
 
+import User from '../model/User';
+
+
 class UserController extends Controller {
+    public async list() {
+        const { ctx } = this;
+        const param = ctx.query;
+        const page = param.page || 1;
+        const each = param.each || 15;
+        const search = param.search;
+        let users, length;
+        if (search) {
+            [users, length] = await ctx.repo.User.createQueryBuilder()
+                .where('user.username LIKE :param')
+                .setParameter('param', '%' + search + '%')
+                .skip((page - 1) * each)
+                .take(each)
+                .getManyAndCount();
+        }
+        else {
+            [users, length] = await ctx.repo.User.findAndCount({
+                skip: (page - 1) * each,
+                take: each
+            });
+        }
+        
+        ctx.helper.response(200, 'processed successfully', {
+            count: length,
+            page_count: Math.ceil(length / each),
+            users: users.map((user: User) => ({
+                uid: user.uid,
+                username: user.username,
+                nickname: user.nickname,
+                email: user.email,
+                level: user.level,
+                tag: user.tag
+            }))
+        });
+    }
+
     public async detail() {
         const { ctx } = this;
         const param = ctx.query;

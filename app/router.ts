@@ -20,6 +20,7 @@ export default (app: Application) => {
     router.post('/submission/submit',jwt, controller.submission.submit);
 
     router.get('/user/detail', controller.user.detail);
+    router.get('/user/list', jwt, controller.user.list);
     router.post('/user/update', jwt, controller.user.update);
 
     router.get('/captcha/get', controller.captcha.get);
