@@ -119,7 +119,7 @@ class SubmissionController extends Controller {
         
         Judger.judge(judgerConfig).then(async (result: Judger.JudgeResult) => {
             const submission = await ctx.repo.Submission.create();
-            submission.uid = 1;
+            submission.uid = ctx.state.user_id;
             submission.pid = pid;
             submission.language = language;
             submission.status = getSubmissionStatus(result.status);
