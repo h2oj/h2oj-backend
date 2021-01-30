@@ -2,10 +2,19 @@ import { Controller } from 'egg';
 
 import User from '../model/User';
 
-
 class UserController extends Controller {
     public async list() {
         const { ctx } = this;
+
+        if (!ctx.state.user_id) {
+            ctx.helper.failure(422, 'validation failed');
+            return;
+        }
+        if (!await ctx.service.permission.checkPermission(ctx.state.user_id, 'LOOKUP_USER')) {
+            ctx.helper.failure(403, 'permission denied');
+            return;
+        }
+
         const param = ctx.query;
         const page = param.page || 1;
         const each = param.each || 15;

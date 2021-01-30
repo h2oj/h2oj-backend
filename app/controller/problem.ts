@@ -4,8 +4,6 @@ import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
 
-import User from '../model/User';
-
 class ProblemController extends Controller {
     public async list() {
         const { ctx } = this;
@@ -80,31 +78,26 @@ class ProblemController extends Controller {
         const { ctx } = this;
         const param = ctx.request.body;
 
-        const isAdmin = await User.fromUidCheckPermission(ctx.state.user_id, 6);
-        if(isAdmin) {
-            const problem = await ctx.repo.Problem.findOne({
-                where: { pid: param.pid }
-            });
+        const problem = await ctx.repo.Problem.findOne({
+            where: { pid: param.pid }
+        });
 
-            if (!problem) {
-                ctx.helper.response(2002, 'no data');
-                return;
-            }
-
-            await problem.loadContent();
-
-            problem.title = param.title;
-            problem.difficulty = param.difficulty;
-            problem.content.content = param.content;
-            //problem.content.sample = param.sample;
-
-            await problem.content.save();
-            await problem.save();
-
-            ctx.helper.response(200, 'processed successfully');
-        } else {
-            ctx.helper.response(401, 'no permission');
+        if (!problem) {
+            ctx.helper.response(2002, 'no data');
+            return;
         }
+
+        await problem.loadContent();
+
+        problem.title = param.title;
+        problem.difficulty = param.difficulty;
+        problem.content.content = param.content;
+        //problem.content.sample = param.sample;
+
+        await problem.content.save();
+        await problem.save();
+
+        ctx.helper.response(200, 'processed successfully');
     }
 
     public async upload_data() {

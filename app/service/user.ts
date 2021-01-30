@@ -15,10 +15,8 @@ class UserService extends Service {
         user.email = payload.email;
         user.reg_time = ctx.helper.getTime();
         user.last_login = user.reg_time;
-
         await user.save();
 
-        console.log(`New account: ${user.username}(uid=${user.uid})`);
         return user;
     }
 

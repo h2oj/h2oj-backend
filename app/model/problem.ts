@@ -39,7 +39,9 @@ class Problem extends Model {
 
     async loadPublisher() {
         if (!this.publisher && this.uid !== undefined) {
-            this.publisher = await User.fromUid(this.uid);
+            this.publisher = await User.findOne({
+                where: { uid: this.uid }
+            });
         }
     }
 

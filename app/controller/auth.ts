@@ -37,6 +37,7 @@ class AuthController extends Controller {
         const user = await ctx.service.user.create({
             username: param.username,
             nickname: param.nickname,
+            role_id: 999,
             email: param.email,
             password: param.password
         });
@@ -73,7 +74,8 @@ class AuthController extends Controller {
         }
         
         const token = app.jwt.sign({
-            user_id: user.uid
+            user_id: user.uid,
+            role_id: user.role_id,
         }, app.config.jwt.secret);
 
         user.last_login = ctx.helper.getTime();

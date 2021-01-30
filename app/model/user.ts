@@ -6,6 +6,9 @@ class User extends Model {
     @TypeORM.PrimaryGeneratedColumn()
     uid: number;
 
+    @TypeORM.Column({ nullable: false, type: 'integer', default: 999 })
+    role_id: number;
+
     @TypeORM.Column({ nullable: false, type: 'varchar', length: 32 })
     username: string;
 
@@ -60,32 +63,7 @@ class User extends Model {
     @TypeORM.Column({ nullable: false, type: 'text' })
     tag: string;
 
-    static async fromUid(uid: number) : Promise<User> {
-        return User.findOne({
-            where: { uid: uid }
-        });
-    }
-
-    static async fromName(name: string) : Promise<User> {
-        return User.findOne({
-            where: { username: name }
-        });
-    }
-
-    static async fromEmail(email: string) : Promise<User> {
-        return User.findOne({
-            where: { email: email }
-        });
-    }
-
-    static async fromUidCheckPermission(uid: number, requestLevel: number) : Promise<boolean> {
-        const user = User.findOne({
-            where: { uid: uid }
-        });
-        return (await user).level >= requestLevel;
-    }
-
-    static async listUser(page: number, limit: number) : Promise<Array<User>> {
+    static async listUser(page: number, limit: number): Promise<Array<User>> {
         return User.find({
             skip: page,
             take: limit

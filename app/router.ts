@@ -17,7 +17,7 @@ export default (app: Application) => {
 
     router.get('/submission/list', controller.submission.list);
     router.get('/submission/detail', controller.submission.detail);
-    router.post('/submission/submit',jwt, controller.submission.submit);
+    router.post('/submission/submit', jwt, controller.submission.submit);
 
     router.get('/user/detail', controller.user.detail);
     router.get('/user/list', jwt, controller.user.list);

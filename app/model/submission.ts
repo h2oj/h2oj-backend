@@ -46,7 +46,9 @@ class Submission extends Model {
 
     async loadUser() {
         if (!this.user && this.uid !== undefined) {
-            this.user = await User.fromUid(this.uid);
+            this.user = await User.findOne({
+                where: { uid: this.uid }
+            });
         }
     }
 
