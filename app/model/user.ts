@@ -60,7 +60,7 @@ class User extends Model {
     @TypeORM.Column({ nullable: false, type: 'integer', default: 1 })
     level: number;
 
-    @TypeORM.Column({ nullable: false, type: 'text' })
+    @TypeORM.Column({ nullable: true, type: 'text' })
     tag: string;
 
     static async listUser(page: number, limit: number): Promise<Array<User>> {
