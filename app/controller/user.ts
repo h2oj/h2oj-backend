@@ -49,6 +49,39 @@ class UserController extends Controller {
         });
     }
 
+    public async change() {
+        const { ctx } = this;
+        const param = ctx.query;
+
+        if (!ctx.state.user_id) {
+            ctx.helper.failure(422, 'validation failed');
+            return;
+        }
+        if (!await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_USER')) {
+            ctx.helper.failure(403, 'permission denied');
+            return;
+        }
+
+        const user = await ctx.repo.User.findOne({
+            where: { uid: param.uid }
+        });
+
+        if (param.role_id) {
+            if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_USER_ROLE'))
+                user.role_id = param.role_id;
+            else ctx.helper.failure(403, 'permission denied');
+        }
+        if (param.tag) user.tag = param.tag;
+        if (param.level) user.level = param.level;
+        if (param.avatar) user.avatar = param.avatar;
+        if (param.nickname) user.nickname = param.nickname;
+        if (param.description) user.description = param.description;
+        if (param.information) user.information = param.information;
+        if (param.sex) user.sex = param.sex;
+        await user.save();
+        ctx.helper.response(200, 'processed successfully');
+    }
+
     public async detail() {
         const { ctx } = this;
         const param = ctx.query;

@@ -22,6 +22,7 @@ export default (app: Application) => {
     router.get('/user/detail', controller.user.detail);
     router.get('/user/list', jwt, controller.user.list);
     router.post('/user/update', jwt, controller.user.update);
+    router.post('/user/change', jwt, controller.user.change);
 
     router.get('/captcha/get', controller.captcha.get);
     router.post('/captcha/verify', jwt, controller.captcha.verify);
