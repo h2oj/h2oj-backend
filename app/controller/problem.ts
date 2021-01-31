@@ -3,6 +3,8 @@ import Problem from '../model/Problem';
 import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
+import User from '../model/User';
+
 
 class ProblemController extends Controller {
     public async list() {
@@ -77,27 +79,31 @@ class ProblemController extends Controller {
     public async update() {
         const { ctx } = this;
         const param = ctx.request.body;
+        if (ctx.user.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')){
+            const problem = await ctx.repo.Problem.findOne({
+                where: { pid: param.pid }
+            });
 
-        const problem = await ctx.repo.Problem.findOne({
-            where: { pid: param.pid }
-        });
+            if (!problem) {
+                ctx.helper.response(2002, 'no data');
+                return;
+            }
 
-        if (!problem) {
-            ctx.helper.response(2002, 'no data');
-            return;
+            await problem.loadContent();
+
+            problem.title = param.title;
+            problem.difficulty = param.difficulty;
+            problem.content.content = param.content;
+            //problem.content.sample = param.sample;
+
+            await problem.content.save();
+            await problem.save();
+
+            ctx.helper.response(200, 'processed successfully');
         }
-
-        await problem.loadContent();
-
-        problem.title = param.title;
-        problem.difficulty = param.difficulty;
-        problem.content.content = param.content;
-        //problem.content.sample = param.sample;
-
-        await problem.content.save();
-        await problem.save();
-
-        ctx.helper.response(200, 'processed successfully');
+        else {
+            ctx.helper.response(401, 'premission denied');
+        }
     }
 
     public async upload_data() {
@@ -105,24 +111,27 @@ class ProblemController extends Controller {
         const param = ctx.request.body;
         const file = ctx.request.files[0];
         const pid = param.pid;
-
-        const dataPath = path.join(ctx.app.config.path.data, pid);
-        if (!fs.existsSync(dataPath)) {
-            fs.mkdirSync(dataPath, { recursive: true });
-        }
-        fs.copyFileSync(file.filepath, path.join(dataPath, 'data.zip'));
-        const extractPath = path.join(dataPath, 'temp');
-        let zip = new AdmZip(file.filepath);
-        zip.extractAllTo(extractPath, true);
-        for (let file of fs.readdirSync(extractPath)) {
-            if (file === 'config.yml' || ['.in', '.out'].includes(path.extname(file))) {
-                fs.copyFileSync(path.join(extractPath, file), path.join(dataPath, path.basename(file)));
+        if (ctx.user.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')){
+            const dataPath = path.join(ctx.app.config.path.data, pid);
+            if (!fs.existsSync(dataPath)) {
+                fs.mkdirSync(dataPath, { recursive: true });
             }
+            fs.copyFileSync(file.filepath, path.join(dataPath, 'data.zip'));
+            const extractPath = path.join(dataPath, 'temp');
+            let zip = new AdmZip(file.filepath);
+            zip.extractAllTo(extractPath, true);
+            for (let file of fs.readdirSync(extractPath)) {
+                if (file === 'config.yml' || ['.in', '.out'].includes(path.extname(file))) {
+                    fs.copyFileSync(path.join(extractPath, file), path.join(dataPath, path.basename(file)));
+                }
+            }
+            ctx.cleanupRequestFiles();
+            fs.rmdirSync(extractPath, { recursive: true });
+            ctx.helper.response(200, 'processed successfully');
         }
-        ctx.cleanupRequestFiles();
-        fs.rmdirSync(extractPath, { recursive: true });
-    
-        ctx.helper.response(200, 'processed successfully');
+        else {
+            ctx.helper.response(401, 'premission denied');
+        }
     }
 
     public async download_data() {
