@@ -79,7 +79,7 @@ class ProblemController extends Controller {
     public async update() {
         const { ctx } = this;
         const param = ctx.request.body;
-        if (await ctx.user.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')){
+        if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')){
             const problem = await ctx.repo.Problem.findOne({
                 where: { pid: param.pid }
             });
@@ -111,7 +111,7 @@ class ProblemController extends Controller {
         const param = ctx.request.body;
         const file = ctx.request.files[0];
         const pid = param.pid;
-        if (await ctx.user.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')){
+        if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')){
             const dataPath = path.join(ctx.app.config.path.data, pid);
             if (!fs.existsSync(dataPath)) {
                 fs.mkdirSync(dataPath, { recursive: true });
