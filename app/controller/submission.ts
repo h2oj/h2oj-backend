@@ -1,6 +1,5 @@
 import { Controller } from 'egg';
 import Submission from '../model/Submission';
-import { getSubmissionStatus, getSubmissionDetailStatus } from '../model/definition';
 import path from 'path';
 import fs from 'fs';
 import Judger from 'hoj-judger';
@@ -111,31 +110,36 @@ class SubmissionController extends Controller {
         }
         fs.writeFileSync(path.join(workPath, 'src.' + fileExt), code);
 
-        const judgerConfig = {
-            work_path: workPath,
-            judger_config: './hoj-judger.conf',
-            data_path: path.join(ctx.app.config.path.data, pid)
+        const judgerConfig: Judger.JudgerConfig = {
+            code_path: path.join(workPath, 'src.' + fileExt),
+            problem_path: path.join(ctx.app.config.path.data, pid),
+            output_path: workPath,
+            language: language
         };
+
+        const submission = await ctx.repo.Submission.create();
+        submission.uid = ctx.state.user_id;
+        submission.pid = pid;
+        submission.language = language;
+        submission.submit_time = submit_time;
+        await submission.save();
+
+        const submissionDetail = await ctx.repo.SubmissionDetail.create();
+        submissionDetail.sid = submission.sid;
+        submissionDetail.file_id = codeHash;
+        await submissionDetail.save();
         
         Judger.judge(judgerConfig).then(async (result: Judger.JudgeResult) => {
-            const submission = await ctx.repo.Submission.create();
-            submission.uid = ctx.state.user_id;
-            submission.pid = pid;
-            submission.language = language;
-            submission.status = getSubmissionStatus(result.status);
-            submission.submit_time = submit_time;
-            submission.total_time = result.total_time;
-            submission.total_space = result.total_memory;
+            submission.status = result.status;
+            submission.total_time = result.time;
+            submission.total_space = result.space;
             submission.code_size = fs.statSync(filePath).size;
             await submission.save();
-
-            const submissionDetail = await ctx.repo.SubmissionDetail.create();
-            submissionDetail.sid = submission.sid;
-            submissionDetail.file_id = codeHash;
-            submissionDetail.test_case = result.test_point.map((testCase: Judger.TestPointResult) => ({
+            
+            submissionDetail.test_case = result.case.map((testCase: Judger.TestCaseResult) => ({
                 time: testCase.time,
-                space: testCase.memory,
-                status: getSubmissionDetailStatus(testCase.status)
+                space: testCase.space,
+                status: testCase.status
             }));
             await submissionDetail.save();
         });

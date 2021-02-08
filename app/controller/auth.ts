@@ -5,7 +5,7 @@ class AuthController extends Controller {
     private validate(payload: any): boolean {
         const reEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
         //const rePhone = /^(\+86)(13[0-9]|145|147|15[0-3,5-9]|18[0,2,5-9])(\d{8})$/;
-        const reUsername = /^[a-zA-Z]+[a-zA-Z0-9_]$/;
+        const reUsername = /^[a-zA-Z]+[a-zA-Z0-9_]*$/;
 
         if (payload.email && !reEmail.test(payload.email)) {
             return false;

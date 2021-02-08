@@ -115,3 +115,6 @@ data
 
 # Config
 config/config.default.ts
+
+# VSCode Config
+.vscode

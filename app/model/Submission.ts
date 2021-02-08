@@ -1,8 +1,9 @@
 import * as TypeORM from 'typeorm';
-import { Model, SubmissionStatus } from './definition';
+import { Model } from './definition';
 import Problem from './Problem';
 import SubmissionDetail from './SubmissionDetail';
 import User from './User';
+import { JudgeStatus } from 'hoj-judger';
 
 @TypeORM.Entity('submission')
 class Submission extends Model {
@@ -19,7 +20,7 @@ class Submission extends Model {
     language: string;
 
     @TypeORM.Column({ nullable: true, type: 'integer' })
-    status: SubmissionStatus;
+    status: JudgeStatus;
 
     @TypeORM.Column({ nullable: true, type: 'integer' })
     total_time: number;

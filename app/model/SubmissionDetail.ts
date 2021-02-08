@@ -1,10 +1,11 @@
 import * as TypeORM from 'typeorm';
-import { Model, SubmissionDetailStatus } from './definition';
+import { Model } from './definition';
+import { TestCaseStatus } from 'hoj-judger';
 
 interface SubmissionTestCase {
     time: number;
     space: number;
-    status: SubmissionDetailStatus;
+    status: TestCaseStatus;
 }
 
 interface SubmissionTestCaseSet extends Array<SubmissionTestCase> {}
