@@ -34,6 +34,9 @@ class Submission extends Model {
     @TypeORM.Column({ nullable: true, type: 'integer' })
     submit_time: number;
 
+    @TypeORM.Column({ nullable: false, type: 'integer', default: 0 })
+    score: number;
+
     user?: User;
 
     problem?: Problem;

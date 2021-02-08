@@ -122,24 +122,30 @@ class SubmissionController extends Controller {
         submission.pid = pid;
         submission.language = language;
         submission.submit_time = submit_time;
+        submission.status = Judger.JudgeStatus.NO_STATUS;
+        submission.code_size = fs.statSync(filePath).size;
+        submission.total_time = 0;
+        submission.total_space = 0;
         await submission.save();
 
         const submissionDetail = await ctx.repo.SubmissionDetail.create();
         submissionDetail.sid = submission.sid;
         submissionDetail.file_id = codeHash;
+        submissionDetail.test_case = [];
         await submissionDetail.save();
         
         Judger.judge(judgerConfig).then(async (result: Judger.JudgeResult) => {
             submission.status = result.status;
             submission.total_time = result.time;
             submission.total_space = result.space;
-            submission.code_size = fs.statSync(filePath).size;
+            submission.score = result.score;
             await submission.save();
             
             submissionDetail.test_case = result.case.map((testCase: Judger.TestCaseResult) => ({
                 time: testCase.time,
                 space: testCase.space,
-                status: testCase.status
+                status: testCase.status,
+                score: testCase.score
             }));
             await submissionDetail.save();
         });

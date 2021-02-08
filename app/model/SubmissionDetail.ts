@@ -6,6 +6,7 @@ interface SubmissionTestCase {
     time: number;
     space: number;
     status: TestCaseStatus;
+    score: number;
 }
 
 interface SubmissionTestCaseSet extends Array<SubmissionTestCase> {}
