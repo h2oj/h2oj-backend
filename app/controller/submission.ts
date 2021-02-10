@@ -26,6 +26,7 @@ class SubmissionController extends Controller {
                     pid: submission.pid,
                     uid: submission.uid,
                     status: submission.status,
+                    score: submission.score,
                     language: submission.language,
                     total_time: submission.total_time,
                     total_space: submission.total_space,
@@ -66,6 +67,7 @@ class SubmissionController extends Controller {
             pid: submission.pid,
             uid: submission.uid,
             status: submission.status,
+            score: submission.score,
             language: submission.language,
             total_time: submission.total_time,
             total_space: submission.total_space,
@@ -84,7 +86,7 @@ class SubmissionController extends Controller {
     }
 
     public async submit() {
-        const { ctx } = this;
+        const { ctx, app } = this;
         const param = ctx.request.body;
         const language = param.language;
         const code = param.code;
@@ -134,20 +136,9 @@ class SubmissionController extends Controller {
         submissionDetail.test_case = [];
         await submissionDetail.save();
         
-        Judger.judge(judgerConfig).then(async (result: Judger.JudgeResult) => {
-            submission.status = result.status;
-            submission.total_time = result.time;
-            submission.total_space = result.space;
-            submission.score = result.score;
-            await submission.save();
-            
-            submissionDetail.test_case = result.case.map((testCase: Judger.TestCaseResult) => ({
-                time: testCase.time,
-                space: testCase.space,
-                status: testCase.status,
-                score: testCase.score
-            }));
-            await submissionDetail.save();
+        app.bus.emit('judge', {
+            judgerConfig: judgerConfig,
+            submission_id: submission.sid
         });
 
         ctx.helper.response(200, 'processed successfully');

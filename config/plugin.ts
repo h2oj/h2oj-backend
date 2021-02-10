@@ -17,6 +17,10 @@ const plugin: EggPlugin = {
     multipart: {
         enable: true,
         package: 'egg-multipart'
+    },
+    bus: {
+        enable: true,
+        package: 'egg-bus'
     }
 };
 
