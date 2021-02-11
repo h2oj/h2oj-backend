@@ -13,7 +13,7 @@ export default (app: Application) => {
     router.get('/problem/detail', controller.problem.detail);
     router.post('/problem/update', jwt, controller.problem.update);
     router.post('/problem/upload_data', jwt, controller.problem.upload_data);
-    router.get('/problem/download_data', jwt, controller.problem.download_data);
+    router.post('/problem/download_data', jwt, controller.problem.download_data);
 
     router.get('/submission/list', controller.submission.list);
     router.get('/submission/detail', controller.submission.detail);

@@ -5,7 +5,6 @@ import fs from 'fs';
 import AdmZip from 'adm-zip';
 // import User from '../model/User';
 
-
 class ProblemController extends Controller {
     public async list() {
         const { ctx } = this;
@@ -111,12 +110,12 @@ class ProblemController extends Controller {
         const param = ctx.request.body;
         const file = ctx.request.files[0];
         const pid = param.pid;
-        if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')){
+
+        if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')) {
             const dataPath = path.join(ctx.app.config.path.data, pid);
             if (!fs.existsSync(dataPath)) {
                 fs.mkdirSync(dataPath, { recursive: true });
             }
-            fs.copyFileSync(file.filepath, path.join(dataPath, 'data.zip'));
             const extractPath = path.join(dataPath, 'temp');
             let zip = new AdmZip(file.filepath);
             zip.extractAllTo(extractPath, true);
@@ -135,7 +134,28 @@ class ProblemController extends Controller {
     }
 
     public async download_data() {
+        const { ctx } = this;
+        const param = ctx.request.body;
+        const pid = param.pid;
 
+        if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')) {
+            const dataPath = path.join(ctx.app.config.path.data, pid);
+
+            var zip = new AdmZip();
+            for (let file of fs.readdirSync(dataPath)) {
+                if (file === 'config.yml' || ['.in', '.out'].includes(path.extname(file))) {
+                    zip.addFile(file, fs.readFileSync(path.join(dataPath, file)));
+                }
+            }
+            
+            ctx.attachment('data.zip');
+            ctx.set('Content-Type', 'application/octet-stream');
+            ctx.body = zip.toBuffer();
+            console.log(zip.toBuffer());
+        }
+        else {
+            ctx.helper.response(401, 'premission denied');
+        }
     }
 }
 
