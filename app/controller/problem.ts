@@ -93,7 +93,7 @@ class ProblemController extends Controller {
             problem.title = param.title;
             problem.difficulty = param.difficulty;
             problem.content.content = param.content;
-            //problem.content.sample = param.sample;
+            problem.content.sample = param.sample;
 
             await problem.content.save();
             await problem.save();
