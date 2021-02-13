@@ -1,8 +1,5 @@
 import { Controller } from 'egg';
 import Submission from '../model/Submission';
-import path from 'path';
-import fs from 'fs';
-import Judger from 'hoj-judger';
 
 class SubmissionController extends Controller {
     public async list() {
@@ -92,53 +89,18 @@ class SubmissionController extends Controller {
         const code = param.code;
         const pid = param.pid;
 
-        const submit_time = Math.floor(Number(new Date()) / 1000);
+        const submitTime = Math.floor(Number(new Date()) / 1000);
         if (!ctx.service.submission.checkLanguage(language)) {
             ctx.helper.response(5001, 'unavailable language');
             return;
         }
 
-        // Save code to file
-        const codeHash = ctx.service.submission.generateCodeHash(code);
-        const fileExt = ctx.service.submission.getLanguageFileExtension(language);
-        const fileName = codeHash + '.' + fileExt;
-        const filePath = path.join(ctx.app.config.path.code, fileName);
-        fs.writeFileSync(filePath, code);
-        
-        // Init workspace
-        const workPath = path.join(ctx.app.config.path.judge, codeHash);
-        if (!fs.existsSync(workPath)) {
-            fs.mkdirSync(workPath);
-        }
-        fs.writeFileSync(path.join(workPath, 'src.' + fileExt), code);
-
-        const judgerConfig: Judger.JudgerConfig = {
-            code_path: path.join(workPath, 'src.' + fileExt),
-            problem_path: path.join(ctx.app.config.path.data, pid),
-            output_path: workPath,
-            language: language
-        };
-
-        const submission = await ctx.repo.Submission.create();
-        submission.uid = ctx.state.user_id;
-        submission.pid = pid;
-        submission.language = language;
-        submission.submit_time = submit_time;
-        submission.status = Judger.JudgeStatus.NO_STATUS;
-        submission.code_size = fs.statSync(filePath).size;
-        submission.total_time = 0;
-        submission.total_space = 0;
-        await submission.save();
-
-        const submissionDetail = await ctx.repo.SubmissionDetail.create();
-        submissionDetail.sid = submission.sid;
-        submissionDetail.file_id = codeHash;
-        submissionDetail.test_case = [];
-        await submissionDetail.save();
-        
         app.bus.emit('judge', {
-            judgerConfig: judgerConfig,
-            submission_id: submission.sid
+            uid: ctx.state.user_id,
+            language: language,
+            code: code,
+            pid: pid,
+            submitTime: submitTime
         });
 
         ctx.helper.response(200, 'processed successfully');

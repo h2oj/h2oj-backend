@@ -115,6 +115,7 @@ data
 
 # Config
 config/config.default.ts
+hoj-judger-config.yml
 
 # VSCode Config
 .vscode
