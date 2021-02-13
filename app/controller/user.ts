@@ -42,6 +42,7 @@ class UserController extends Controller {
                 uid: user.uid,
                 username: user.username,
                 nickname: user.nickname,
+                role_id: user.role_id,
                 email: user.email,
                 level: user.level,
                 tag: user.tag
@@ -100,6 +101,7 @@ class UserController extends Controller {
             sex: user.sex,
             username: user.username,
             nickname: user.nickname,
+            role_id: user.role_id,
             description: user.description,
             information: user.information,
             rating: user.rating,
@@ -132,6 +134,7 @@ class UserController extends Controller {
             sex: user.sex,
             username: user.username,
             nickname: user.nickname,
+            role_id: user.role_id,
             description: user.description,
             information: user.information,
             rating: user.rating,

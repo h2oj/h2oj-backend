@@ -84,6 +84,7 @@ class AuthController extends Controller {
         ctx.helper.response(200, 'processed successfully', {
             username: user.username,
             nickname: user.nickname,
+            role_id: user.role_id,
             uid: user.uid,
             avatar: user.avatar,
             token: token
