@@ -73,26 +73,33 @@ class JudgerListener extends Listener {
         const problem = await ctx.repo.Problem.findOne({ where: { pid: pid } });
         problem.submit_count += 1;        
 
-        const result = await Judger.judge(judgerConfig);
+        try {
+            const result = await Judger.judge(judgerConfig);
 
-        submission.status = result.status;
-        submission.total_time = result.time;
-        submission.total_space = result.space;
-        submission.score = result.score;
-        await submission.save();
-        
-        submissionDetail.test_case = result.case.map((testCase: Judger.TestCaseResult) => ({
-            time: testCase.time,
-            space: testCase.space,
-            status: testCase.status,
-            score: testCase.score
-        }));
-        await submissionDetail.save();
+            submission.status = result.status;
+            submission.total_time = result.time;
+            submission.total_space = result.space;
+            submission.score = result.score;
+            await submission.save();
+            
+            submissionDetail.test_case = result.case.map((testCase: Judger.TestCaseResult) => ({
+                time: testCase.time,
+                space: testCase.space,
+                status: testCase.status,
+                score: testCase.score
+            }));
+            await submissionDetail.save();
 
-        if (result.status == Judger.JudgeStatus.ACCEPTED) {
-            problem.ac_count += 1;
+            if (result.status == Judger.JudgeStatus.ACCEPTED) {
+                problem.ac_count += 1;
+            }
+            await problem.save();
         }
-        await problem.save();
+        catch (error) {
+            submission.status = Judger.JudgeStatus.SYSTEM_ERROR;
+            await submission.save();
+            await problem.save();
+        }
     }
 
     async failed(_event: ListenerStruct<object>, error: Error, _job: any) {
