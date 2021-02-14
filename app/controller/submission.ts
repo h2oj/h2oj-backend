@@ -102,7 +102,7 @@ class SubmissionController extends Controller {
         const code = param.code;
         const pid = param.pid;
 
-        const submitTime = Math.floor(Number(new Date()) / 1000);
+        const submitTime = ctx.helper.getTime();
         if (!ctx.service.submission.checkLanguage(language)) {
             ctx.helper.response(5001, 'unavailable language');
             return;

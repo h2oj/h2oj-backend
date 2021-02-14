@@ -18,7 +18,7 @@ export default {
         };
     },
     getTime() {
-        return Math.floor((new Date()).getTime() / 1000);
+        return Math.floor(Number(new Date()) / 1000);
     }
 };
 
