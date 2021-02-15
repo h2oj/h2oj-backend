@@ -2,6 +2,10 @@ import * as TypeORM from 'typeorm';
 import ContestContent from './ContestContent';
 import { Model } from './definition';
 
+enum ContestMode {
+    IOI, NOI, ACM
+};
+
 @TypeORM.Entity('contest')
 class Contest extends Model {
     @TypeORM.PrimaryGeneratedColumn()
@@ -19,6 +23,9 @@ class Contest extends Model {
     @TypeORM.Column({ nullable: false, type: 'integer' })
     end_time: number;
 
+    @TypeORM.Column({ nullable: false, type: 'integer', default: ContestMode.IOI })
+    mode: ContestMode;
+
     content?: ContestContent;
 
     async loadContent() {
@@ -30,4 +37,7 @@ class Contest extends Model {
     }
 }
 
-export default Contest;
+export {
+    Contest as default,
+    ContestMode
+};

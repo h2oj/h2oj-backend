@@ -1,5 +1,5 @@
 import { Controller } from 'egg';
-import Contest from '../model/Contest';
+import Contest, { ContestMode } from '../model/Contest';
 
 class ContestController extends Controller {
     public async create() {
@@ -16,6 +16,7 @@ class ContestController extends Controller {
         contest.user_id = ctx.state.user_id;
         contest.start_time = param.start_time || ctx.helper.getTime();
         contest.end_time = param.end_time || ctx.helper.getTime() + 86400;
+        contest.mode = param.mode || ContestMode.IOI;
         await contest.save();
 
         const contestContent = await ctx.repo.ContestContent.create();
@@ -36,14 +37,23 @@ class ContestController extends Controller {
         const contest = await ctx.repo.Contest.findOne({ where: { contest_id: param.contest_id } });
         await contest.loadContent();
 
+        const problemDetail = [];
+        for (const problemID of contest.content.problem) {
+            const problem = await ctx.repo.Problem.findOne({ where: { pid: problemID } });
+            // TODO permission
+            problemDetail.push({ problem_id: problem.pid, title: problem.title });
+        }
+
         ctx.helper.response(200, 'processed successfully', {
             contest_id: contest.contest_id,
             title: contest.title,
+            mode: contest.mode,
             user_id: contest.user_id,
             start_time: contest.start_time,
             end_time: contest.end_time,
             content: contest.content.content,
-            problem: contest.content.problem
+            problem: contest.content.problem,
+            problem_detail: problemDetail
         });
     }
 
@@ -63,6 +73,7 @@ class ContestController extends Controller {
             page_count: Math.ceil(length / each),
             contests: contests.map((contest: Contest) => ({
                 contest_id: contest.contest_id,
+                mode: contest.mode,
                 title: contest.title,
                 start_time: contest.start_time,
                 end_time: contest.end_time
@@ -88,6 +99,7 @@ class ContestController extends Controller {
         await contest.loadContent();
 
         contest.title = param.title;
+        contest.mode = param.mode;
         contest.start_time = param.start_time;
         contest.end_time = param.end_time;
         contest.content.content = param.content;

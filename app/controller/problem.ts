@@ -56,6 +56,16 @@ class ProblemController extends Controller {
             return;
         }
 
+        if (param.brief == true) {
+            ctx.helper.response(200, 'processed successfully', {
+                pid: problem.pid,
+                title: problem.title,
+                difficulty: problem.difficulty,
+                ac_count: problem.ac_count,
+                submit_count: problem.submit_count
+            });
+        }
+
         await problem.loadPublisher();
         await problem.loadContent();
 
