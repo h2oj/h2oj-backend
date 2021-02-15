@@ -71,7 +71,10 @@ class JudgerListener extends Listener {
         await submissionDetail.save();
 
         const problem = await ctx.repo.Problem.findOne({ where: { pid: pid } });
-        problem.submit_count += 1;        
+        problem.submit_count += 1;
+
+        const user = await ctx.repo.User.findOne({ where: { uid: uid } });
+        user.submit_count += 1;
 
         try {
             const result = await Judger.judge(judgerConfig);
@@ -92,13 +95,16 @@ class JudgerListener extends Listener {
 
             if (result.status == Judger.JudgeStatus.ACCEPTED) {
                 problem.ac_count += 1;
+                user.ac_count += 1;
             }
             await problem.save();
+            await user.save();
         }
         catch (error) {
             submission.status = Judger.JudgeStatus.SYSTEM_ERROR;
             await submission.save();
             await problem.save();
+            await user.save();
         }
     }
 
