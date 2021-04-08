@@ -1,6 +1,6 @@
 import * as TypeORM from 'typeorm';
 import { Model } from './definition';
-import { TestCaseStatus } from 'hoj-judger';
+import { TestCaseStatus } from '@h2oj/judge';
 
 interface SubmissionTestCase {
     time: number;

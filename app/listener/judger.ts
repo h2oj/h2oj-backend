@@ -1,4 +1,4 @@
-import { Listener, ListenerStruct } from 'egg-bus';
+/*import { Listener, ListenerStruct } from 'egg-bus';
 import Judger from 'hoj-judger';
 import path from 'path';
 import fs from 'fs';
@@ -36,11 +36,11 @@ class JudgerListener extends Listener {
         const codeHash = ctx.service.submission.generateCodeHash(code);
         const fileExt = ctx.service.submission.getLanguageFileExtension(language);
         const fileName = codeHash + '.' + fileExt;
-        const filePath = path.join(ctx.app.config.path.code, fileName);
+        const filePath = path.join(ctx.app.config.h2oj.path.code, fileName);
         fs.writeFileSync(filePath, code);
         
         // Init workspace
-        const workPath = path.join(ctx.app.config.path.judge, codeHash);
+        const workPath = path.join(ctx.app.config.h2oj.path.judge, codeHash);
         if (!fs.existsSync(workPath)) {
             fs.mkdirSync(workPath);
         }
@@ -48,7 +48,7 @@ class JudgerListener extends Listener {
 
         const judgerConfig: Judger.JudgerConfig = {
             code_path: path.join(workPath, 'src.' + fileExt),
-            problem_path: path.join(ctx.app.config.path.data, pid.toString()),
+            problem_path: path.join(ctx.app.config.h2oj.path.data, pid.toString()),
             output_path: workPath,
             language: language
         };
@@ -113,4 +113,4 @@ class JudgerListener extends Listener {
     }
 }
 
-export default JudgerListener;
+export default JudgerListener;*/

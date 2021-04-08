@@ -35,7 +35,7 @@ export default (appInfo: EggAppInfo) => {
         }
     };
 
-    config.path = {
+    config.h2oj.path = {
         code: './data/code',
         judge: './data/temp',
         data: './data/problem',
@@ -44,6 +44,20 @@ export default (appInfo: EggAppInfo) => {
 
     config.multipart = {
         mode: 'file',
+    };
+
+    config.io = {
+        init: { },
+        namespace: {
+            '/': {
+                connectionMiddleware: [],
+                packetMiddleware: [],
+            },
+        },
+        redis: {
+            host: '127.0.0.1',
+            port: 6379
+        }
     };
 
     return config;

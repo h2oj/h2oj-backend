@@ -6,9 +6,9 @@ class CaptchaController extends Controller {
     public async get() {
         const { ctx, app } = this;
 
-        const files = fs.readdirSync(ctx.app.config.path.captcha);
+        const files = fs.readdirSync(ctx.app.config.h2oj.path.captcha);
         const index = Math.floor(Math.random() * files.length);
-        const file = path.join(ctx.app.config.path.captcha, files[index]);
+        const file = path.join(ctx.app.config.h2oj.path.captcha, files[index]);
         const data = fs.readFileSync(file, { encoding: 'utf-8' });
         ctx.response.type = 'image/svg+xml';
         ctx.body = data;

@@ -115,14 +115,14 @@ class ProblemController extends Controller {
         }
     }
 
-    public async upload_data() {
+    public async uploadData() {
         const { ctx } = this;
         const param = ctx.request.body;
         const file = ctx.request.files[0];
         const pid = param.pid;
 
         if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')) {
-            const dataPath = path.join(ctx.app.config.path.data, pid);
+            const dataPath = path.join(ctx.app.config.h2oj.path.data, pid);
             if (!fs.existsSync(dataPath)) {
                 fs.mkdirSync(dataPath, { recursive: true });
             }
@@ -143,13 +143,13 @@ class ProblemController extends Controller {
         }
     }
 
-    public async download_data() {
+    public async downloadData() {
         const { ctx } = this;
         const param = ctx.request.body;
         const pid = param.pid;
 
         if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')) {
-            const dataPath = path.join(ctx.app.config.path.data, pid);
+            const dataPath = path.join(ctx.app.config.h2oj.path.data, pid);
 
             var zip = new AdmZip();
             for (let file of fs.readdirSync(dataPath)) {

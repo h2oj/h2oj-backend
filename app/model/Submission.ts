@@ -3,7 +3,7 @@ import { Model } from './definition';
 import Problem from './Problem';
 import SubmissionDetail from './SubmissionDetail';
 import User from './User';
-import { JudgeStatus } from 'hoj-judger';
+import { JudgeStatus } from '@h2oj/judge';
 
 @TypeORM.Entity('submission')
 class Submission extends Model {

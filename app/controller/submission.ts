@@ -1,7 +1,9 @@
 import { Controller } from 'egg';
 import fs from 'fs';
 import path from 'path';
+import Judge from '@h2oj/judge';
 import Submission from '../model/Submission';
+import { TaskStatus } from '../model/Task';
 
 class SubmissionController extends Controller {
     public async list() {
@@ -67,7 +69,7 @@ class SubmissionController extends Controller {
         let fileContent = 'unshown';
         if (ctx.service.submission.checkLanguageCanShow(submission.language)) {
             const fileExt = ctx.service.submission.getLanguageFileExtension(submission.language);
-            const fileName = path.join(ctx.app.config.path.code, submission.detail.file_id + '.' + fileExt);
+            const fileName = path.join(ctx.app.config.h2oj.path.code, submission.detail.file_id + '.' + fileExt);
             fileContent = fs.readFileSync(fileName, { encoding: 'utf-8' });
         }
 
@@ -96,11 +98,12 @@ class SubmissionController extends Controller {
     }
 
     public async submit() {
-        const { ctx, app } = this;
+        const { ctx } = this;
         const param = ctx.request.body;
         const language = param.language;
         const code = param.code;
-        const pid = param.pid;
+        const problem_id = param.pid;
+        const user_id = ctx.state.user_id;
 
         const submitTime = ctx.helper.getTime();
         if (!ctx.service.submission.checkLanguage(language)) {
@@ -108,13 +111,48 @@ class SubmissionController extends Controller {
             return;
         }
 
-        app.bus.emit('judge', {
-            uid: ctx.state.user_id,
-            language: language,
-            code: code,
-            pid: pid,
-            submitTime: submitTime
-        });
+        const codeHash = ctx.service.submission.generateCodeHash(code);
+        const fileExt = ctx.service.submission.getLanguageFileExtension(language);
+        const fileName = codeHash + '.' + fileExt;
+        const filePath = path.join(ctx.app.config.h2oj.path.code, fileName);
+        fs.writeFileSync(filePath, code);
+        
+        const workPath = path.join(ctx.app.config.h2oj.path.judge, codeHash);
+        if (!fs.existsSync(workPath)) {
+            fs.mkdirSync(workPath);
+        }
+        fs.writeFileSync(path.join(workPath, 'src.' + fileExt), code);
+
+        const submission = await ctx.repo.Submission.create();
+        submission.uid = user_id;
+        submission.pid = problem_id;
+        submission.language = language;
+        submission.submit_time = submitTime;
+        submission.status = Judge.JudgeStatus.NO_STATUS;
+        submission.code_size = fs.statSync(filePath).size;
+        submission.total_time = 0;
+        submission.total_space = 0;
+        await submission.save();
+
+        const submissionDetail = await ctx.repo.SubmissionDetail.create();
+        submissionDetail.sid = submission.sid;
+        submissionDetail.file_id = codeHash;
+        submissionDetail.test_case = [];
+        await submissionDetail.save();
+
+        const task = await ctx.repo.Task.create();
+        task.submission_id = submission.sid;
+        task.problem_id = submission.pid;
+        task.added_time = ctx.helper.getTime();
+        task.language = submission.language;
+        task.status = TaskStatus.WAITING;
+        await task.save();
+
+        const problem = await ctx.repo.Problem.findOne({ where: { pid: problem_id } });
+        problem.submit_count += 1;
+
+        const user = await ctx.repo.User.findOne({ where: { uid: user_id } });
+        user.submit_count += 1;
 
         ctx.helper.response(200, 'processed successfully');
     }

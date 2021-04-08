@@ -18,9 +18,13 @@ const plugin: EggPlugin = {
         enable: true,
         package: 'egg-multipart'
     },
-    bus: {
-        enable: true,
+    /*bus: {
+        enable: false,
         package: 'egg-bus'
+    },*/
+    websocket: {
+        enable: true,
+        package: 'egg-websocket-plugin',
     }
 };
 

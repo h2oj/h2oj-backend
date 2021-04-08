@@ -76,6 +76,7 @@ class AuthController extends Controller {
         const token = app.jwt.sign({
             user_id: user.uid,
             role_id: user.role_id,
+            timestamp: Math.floor(Number(new Date()) / 1000)
         }, app.config.jwt.secret);
 
         user.last_login = ctx.helper.getTime();
