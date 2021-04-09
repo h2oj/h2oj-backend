@@ -61,6 +61,8 @@ class JudgeController extends Controller {
                 task.status = TaskStatus.DONE;
                 await task.save();
 
+                processing = false;
+
                 task = await this.doTask(ctx.websocket);
                 detail = await SubmissionDetail.findOne({
                     where: { sid: task.submission_id }
