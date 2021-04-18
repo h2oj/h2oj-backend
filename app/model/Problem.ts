@@ -6,7 +6,7 @@ import User from './User';
 @TypeORM.Entity('problem')
 class Problem extends Model {
     @TypeORM.PrimaryColumn({ nullable: false, type: 'integer' })
-    pid: number;
+    problem_id: number;
 
     @TypeORM.Column({ nullable: false, type: 'tinyint' })
     type: number;
@@ -27,10 +27,9 @@ class Problem extends Model {
     is_public: boolean;
 
     @TypeORM.Column({ nullable: false, type: 'integer'})
-    uid: number;
+    user_id: number;
 
     publisher?: User;
-
     content?: ProblemContent;
 
     async loadRelatives() {
@@ -38,9 +37,9 @@ class Problem extends Model {
     }
 
     async loadPublisher() {
-        if (!this.publisher && this.uid !== undefined) {
+        if (!this.publisher && this.user_id !== undefined) {
             this.publisher = await User.findOne({
-                where: { uid: this.uid }
+                where: { user_id: this.user_id }
             });
         }
     }
@@ -48,14 +47,14 @@ class Problem extends Model {
     async loadContent() {
         if (!this.content) {
             this.content = await ProblemContent.findOne({
-                where: { pid: this.pid }
+                where: { problem_id: this.problem_id }
             });
         }
     }
 
     static async fromPid(pid: number) : Promise<Problem> {
         return Problem.findOne({
-            where: { pid: pid }
+            where: { problem_id: pid }
         });
     }
 

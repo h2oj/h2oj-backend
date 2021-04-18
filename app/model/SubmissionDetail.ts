@@ -14,7 +14,7 @@ interface SubmissionTestCaseSet extends Array<SubmissionTestCase> {}
 @TypeORM.Entity('submission_detail')
 class SubmissionDetail extends Model {
     @TypeORM.PrimaryColumn()
-    sid: number;
+    submission_id: number;
 
     @TypeORM.Column({ type: 'json' })
     test_case: SubmissionTestCaseSet;

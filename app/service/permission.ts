@@ -5,7 +5,7 @@ class PermissionService extends Service {
         const { ctx } = this;
         const user = await ctx.repo.User.findOne({
             where: {
-                uid: user_id
+                user_id: user_id
             }
         });
         const permissionType = await ctx.repo.PermissionType.findOne({

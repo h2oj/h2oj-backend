@@ -4,7 +4,7 @@ import { Model } from './definition';
 @TypeORM.Entity('user')
 class User extends Model {
     @TypeORM.PrimaryGeneratedColumn()
-    uid: number;
+    user_id: number;
 
     @TypeORM.Column({ nullable: false, type: 'integer', default: 999 })
     role_id: number;

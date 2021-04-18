@@ -20,10 +20,10 @@ class UserService extends Service {
         return user;
     }
 
-    public async findById(uid: number): Promise<User> {
+    public async findById(user_id: number): Promise<User> {
         const { ctx } = this;
         let user = await ctx.repo.User.findOne({
-            where: { uid: uid }
+            where: { user_id: user_id }
         });
         return user;
     }

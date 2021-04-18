@@ -1,4 +1,3 @@
-// @ts-nocheck
 import path from 'path';
 import fs from 'fs';
 import AdmZip from 'adm-zip';
@@ -8,6 +7,8 @@ import { JudgeStatus } from '@h2oj/judge';
 import Task, { TaskStatus } from '../model/Task';
 import Submission from '../model/Submission';
 import SubmissionDetail from '../model/SubmissionDetail';
+import ContestPlayer, { ContestProblemDetail } from '../model/ContestPlayer';
+import ContestContent from '../model/ContestContent';
 
 class JudgeController extends Controller {
     public verify() {
@@ -50,13 +51,17 @@ class JudgeController extends Controller {
             }
             else if (event === 'end') {
                 const submission = await Submission.findOne({
-                    where: { sid: task.submission_id }
+                    where: { submission_id: task.submission_id }
                 });
                 submission.score = data.score;
-                submission.total_time = data.time;
-                submission.total_space = data.memory;
+                submission.time = data.time;
+                submission.space = data.memory;
                 submission.status = data.status;
                 await submission.save();
+
+                if (submission.contest_id) {
+                    this.updateContest(submission);
+                }
 
                 task.status = TaskStatus.DONE;
                 await task.save();
@@ -64,11 +69,13 @@ class JudgeController extends Controller {
                 processing = false;
 
                 task = await this.doTask(ctx.websocket);
-                detail = await SubmissionDetail.findOne({
-                    where: { sid: task.submission_id }
-                });
-                detail.test_case = [];
-                processing = true;
+                if (task) {
+                    detail = await SubmissionDetail.findOne({
+                        where: { submission_id: task.submission_id }
+                    });
+                    detail.test_case = [];
+                    processing = true;
+                }
             }
         });
 
@@ -76,7 +83,7 @@ class JudgeController extends Controller {
             console.log(ctx.request.ip, ': websocket closed: ', code, reason);
             if (processing) {
                 const submission = await Submission.findOne({
-                    where: { sid: task.submission_id }
+                    where: { submission_id: task.submission_id }
                 });
                 submission.status = JudgeStatus.SYSTEM_ERROR;
                 await submission.save();
@@ -95,11 +102,13 @@ class JudgeController extends Controller {
         }));
 
         task = await this.doTask(ctx.websocket);
-        detail = await SubmissionDetail.findOne({
-            where: { sid: task.submission_id }
-        });
-        detail.test_case = [];
-        processing = true;
+        if (task) {
+            detail = await SubmissionDetail.findOne({
+                where: { submission_id: task.submission_id }
+            });
+            detail.test_case = [];
+            processing = true;
+        }
     }
 
     public checkData() {
@@ -133,7 +142,7 @@ class JudgeController extends Controller {
         const param = ctx.query;
 
         const submission = await Submission.findOne({
-            where: { sid: param.submission_id } 
+            where: { submission_id: param.submission_id } 
         });
         await submission.loadDetail();
 
@@ -157,13 +166,13 @@ class JudgeController extends Controller {
         }
 
         console.log('::NEW JUDGE TASK TO DAEMON::', [
-            task.id
+            task.task_id
         ]);
         
         ws.send(JSON.stringify({
             event: 'judge',
             data: {
-                task_id: task.id,
+                task_id: task.task_id,
                 problem_id: task.problem_id,
                 submission_id: task.submission_id,
                 language: task.language
@@ -171,6 +180,74 @@ class JudgeController extends Controller {
         }));
 
         return task;
+    }
+
+    private isBetterScore(problem: ContestProblemDetail, submission: Submission) {
+        if (submission.score > problem.score) {
+            return true;
+        }
+        else if (submission.score === problem.score) {
+            if (submission.time < problem.time) {
+                return true;
+            }
+            else if (submission.time === problem.time) {
+                return submission.space < problem.space;
+            }
+        }
+    }
+
+    private async updateContest(submission: Submission) {
+        const player = await ContestPlayer.findOne({
+            where: {
+                contest_id: submission.contest_id,
+                user_id: submission.user_id
+            }
+        });
+        if (!player) {
+            return;
+        }
+        
+        const contestContent = await ContestContent.findOne({
+            where: { contest_id: submission.contest_id }
+        });
+
+        let flag = true;
+        for (const problem of player.detail) {
+            if (contestContent.problem.includes(submission.problem_id)) {
+                if (problem.problem_id === submission.problem_id) {
+                    flag = false;
+                    if (this.isBetterScore(problem, submission)) {
+                        problem.score = submission.score;
+                        problem.space = submission.space;
+                        problem.time = submission.time;
+                        problem.submission_id = submission.submission_id;
+                    }
+                }
+
+                player.score += problem.score;
+                player.time += problem.time;
+                player.space += problem.space;
+            }
+        }
+        if (flag) {
+            if (!contestContent.problem.includes(submission.problem_id)) {
+                return;
+            }
+
+            player.detail.push({
+                problem_id: submission.problem_id,
+                submission_id: submission.submission_id,
+                score: submission.score,
+                time: submission.time,
+                space: submission.space,
+            });
+
+            player.score += submission.score;
+            player.time += submission.time;
+            player.space += submission.space;
+        }
+        
+        await player.save();
     }
 }
 

@@ -21,7 +21,7 @@ class ProblemContent extends Model {
     id: number;
 
     @TypeORM.Column({ nullable: false, type: 'integer' })
-    pid: number;
+    problem_id: number;
 
     @TypeORM.Column({ type: 'json' })
     content: ProblemContentData;

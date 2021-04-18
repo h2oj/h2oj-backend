@@ -25,7 +25,10 @@ export default (app: Application) => {
     router.get('/contest/list', controller.contest.list);
     router.get('/contest/detail', controller.contest.detail);
     router.post('/contest/update', authJwt, controller.contest.update);
-    router.post('/contest/create', authJwt, controller.contest.create);
+    router.post('/contest/new', authJwt, controller.contest.new);
+    router.post('/contest/join', authJwt, controller.contest.join);
+    router.post('/contest/has_joined', authJwt, controller.contest.hasJoined);
+    router.get('/contest/ranklist', controller.contest.ranklist);
 
     router.get('/user/detail', controller.user.detail);
     router.get('/user/list', authJwt, controller.user.list);

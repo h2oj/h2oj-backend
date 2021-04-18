@@ -34,7 +34,7 @@ class ProblemController extends Controller {
             count: length,
             page_count: Math.ceil(length / each),
             problems: problems.map((problem: Problem) => ({
-                pid: problem.pid,
+                problem_id: problem.problem_id,
                 title: problem.title,
                 difficulty: problem.difficulty,
                 ac_count: problem.ac_count,
@@ -48,7 +48,7 @@ class ProblemController extends Controller {
         const param = ctx.query;
 
         const problem = await ctx.repo.Problem.findOne({
-            where: { pid: param.pid }
+            where: { problem_id: param.problem_id }
         });
 
         if (!problem || !problem.is_public) {
@@ -58,7 +58,7 @@ class ProblemController extends Controller {
 
         if (param.brief == true) {
             ctx.helper.response(200, 'processed successfully', {
-                pid: problem.pid,
+                problem_id: problem.problem_id,
                 title: problem.title,
                 difficulty: problem.difficulty,
                 ac_count: problem.ac_count,
@@ -70,7 +70,7 @@ class ProblemController extends Controller {
         await problem.loadContent();
 
         ctx.helper.response(200, 'processed successfully', {
-            pid: problem.pid,
+            problem_id: problem.problem_id,
             title: problem.title,
             difficulty: problem.difficulty,
             ac_count: problem.ac_count,
@@ -78,7 +78,7 @@ class ProblemController extends Controller {
             content: problem.content.content,
             sample: problem.content.sample,
             user: {
-                uid: problem.publisher.uid,
+                user_id: problem.publisher.user_id,
                 username: problem.publisher.username,
                 nickname: problem.publisher.nickname
             }
@@ -90,7 +90,7 @@ class ProblemController extends Controller {
         const param = ctx.request.body;
         if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')){
             const problem = await ctx.repo.Problem.findOne({
-                where: { pid: param.pid }
+                where: { problem_id: param.problem_id }
             });
 
             if (!problem) {
@@ -119,10 +119,10 @@ class ProblemController extends Controller {
         const { ctx } = this;
         const param = ctx.request.body;
         const file = ctx.request.files[0];
-        const pid = param.pid;
+        const problem_id = param.problem_id;
 
         if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')) {
-            const dataPath = path.join(ctx.app.config.h2oj.path.data, pid);
+            const dataPath = path.join(ctx.app.config.h2oj.path.data, problem_id);
             if (!fs.existsSync(dataPath)) {
                 fs.mkdirSync(dataPath, { recursive: true });
             }
@@ -146,10 +146,10 @@ class ProblemController extends Controller {
     public async downloadData() {
         const { ctx } = this;
         const param = ctx.request.body;
-        const pid = param.pid;
+        const problem_id = param.problem_id;
 
         if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')) {
-            const dataPath = path.join(ctx.app.config.h2oj.path.data, pid);
+            const dataPath = path.join(ctx.app.config.h2oj.path.data, problem_id);
 
             var zip = new AdmZip();
             for (let file of fs.readdirSync(dataPath)) {

@@ -8,13 +8,13 @@ import { JudgeStatus } from '@h2oj/judge';
 @TypeORM.Entity('submission')
 class Submission extends Model {
     @TypeORM.PrimaryGeneratedColumn()
-    sid: number;
+    submission_id: number;
 
     @TypeORM.Column({ nullable: false, type: 'integer' })
-    uid: number;
+    user_id: number;
 
     @TypeORM.Column({ nullable: false, type: 'integer' })
-    pid: number;
+    problem_id: number;
 
     @TypeORM.Column({ nullable: false, type: 'varchar', length: 16 })
     language: string;
@@ -23,10 +23,10 @@ class Submission extends Model {
     status: JudgeStatus;
 
     @TypeORM.Column({ nullable: true, type: 'integer' })
-    total_time: number;
+    time: number;
 
     @TypeORM.Column({ nullable: true, type: 'integer' })
-    total_space: number;
+    space: number;
 
     @TypeORM.Column({ nullable: true, type: 'integer' })
     code_size: number;
@@ -37,10 +37,11 @@ class Submission extends Model {
     @TypeORM.Column({ nullable: false, type: 'integer', default: 0 })
     score: number;
 
+    @TypeORM.Column({ nullable: false, type: 'integer', default: 0 })
+    contest_id: number;
+
     user?: User;
-
     problem?: Problem;
-
     detail?: SubmissionDetail;
 
     async loadRelatives() {
@@ -49,23 +50,23 @@ class Submission extends Model {
     }
 
     async loadUser() {
-        if (!this.user && this.uid !== undefined) {
+        if (!this.user && this.user_id !== undefined) {
             this.user = await User.findOne({
-                where: { uid: this.uid }
+                where: { user_id: this.user_id }
             });
         }
     }
 
     async loadProblem() {
-        if (!this.problem && this.pid) {
-            this.problem = await Problem.fromPid(this.pid);
+        if (!this.problem && this.problem_id) {
+            this.problem = await Problem.fromPid(this.problem_id);
         }
     }
 
     async loadDetail() {
-        if (!this.detail && this.sid) {
+        if (!this.detail && this.submission_id) {
             this.detail = await SubmissionDetail.findOne({
-                where: { sid: this.sid }
+                where: { submission_id: this.submission_id }
             });
         }
     }

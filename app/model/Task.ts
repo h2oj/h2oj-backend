@@ -10,7 +10,7 @@ enum TaskStatus {
 @TypeORM.Entity('task')
 class Task extends Model {
     @TypeORM.PrimaryGeneratedColumn()
-    id: number;
+    task_id: number;
 
     @TypeORM.Column({ nullable: false, type: 'integer' })
     added_time: number;

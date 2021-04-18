@@ -39,7 +39,7 @@ class UserController extends Controller {
             count: length,
             page_count: Math.ceil(length / each),
             users: users.map((user: User) => ({
-                uid: user.uid,
+                user_id: user.user_id,
                 username: user.username,
                 nickname: user.nickname,
                 role_id: user.role_id,
@@ -64,7 +64,7 @@ class UserController extends Controller {
         }
 
         const user = await ctx.repo.User.findOne({
-            where: { uid: param.uid }
+            where: { user_id: param.user_id }
         });
 
         if (param.role_id) {
@@ -88,7 +88,7 @@ class UserController extends Controller {
         const param = ctx.query;
 
         const user = await ctx.repo.User.findOne({
-            where: { uid: param.uid }
+            where: { user_id: param.user_id }
         });
 
         if (!user) {
@@ -97,7 +97,7 @@ class UserController extends Controller {
         }
 
         ctx.helper.response(200, 'processed successfully', {
-            uid: user.uid,
+            user_id: user.user_id,
             sex: user.sex,
             username: user.username,
             nickname: user.nickname,
@@ -114,7 +114,7 @@ class UserController extends Controller {
         const param = ctx.request.body;
 
         const user = await ctx.repo.User.findOne({
-            where: { uid: ctx.state.user_id }
+            where: { user_id: ctx.state.user_id }
         });
 
         if (!user) {
@@ -130,7 +130,7 @@ class UserController extends Controller {
         await user.save();
 
         ctx.helper.response(200, 'processed successfully', {
-            uid: user.uid,
+            user_id: user.user_id,
             sex: user.sex,
             username: user.username,
             nickname: user.nickname,

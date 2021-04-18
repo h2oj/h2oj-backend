@@ -74,7 +74,7 @@ class AuthController extends Controller {
         }
         
         const token = app.jwt.sign({
-            user_id: user.uid,
+            user_id: user.user_id,
             role_id: user.role_id,
             timestamp: Math.floor(Number(new Date()) / 1000)
         }, app.config.jwt.secret);
@@ -86,7 +86,7 @@ class AuthController extends Controller {
             username: user.username,
             nickname: user.nickname,
             role_id: user.role_id,
-            uid: user.uid,
+            user_id: user.user_id,
             avatar: user.avatar,
             token: token
         });

@@ -26,21 +26,21 @@ class SubmissionController extends Controller {
                 await submission.loadProblem();
                 await submission.loadUser();
                 return {
-                    sid: submission.sid,
-                    pid: submission.pid,
-                    uid: submission.uid,
+                    submission_id: submission.submission_id,
+                    problem_id: submission.problem_id,
+                    user_id: submission.user_id,
                     status: submission.status,
                     score: submission.score,
                     language: submission.language,
-                    total_time: submission.total_time,
-                    total_space: submission.total_space,
+                    total_time: submission.time,
+                    total_space: submission.space,
                     submit_time: submission.submit_time,
                     problem: {
-                        pid: submission.problem.pid,
+                        problem_id: submission.problem.problem_id,
                         title: submission.problem.title
                     },
                     user: {
-                        uid: submission.user.uid,
+                        user_id: submission.user.user_id,
                         username: submission.user.username,
                         nickname: submission.user.nickname
                     }
@@ -54,7 +54,7 @@ class SubmissionController extends Controller {
         const param = ctx.query;
 
         const submission = await ctx.repo.Submission.findOne({
-            where: { sid: param.sid }
+            where: { submission_id: param.submission_id }
         });
 
         if (!submission) {
@@ -74,23 +74,23 @@ class SubmissionController extends Controller {
         }
 
         ctx.helper.response(200, 'processed successfully', {
-            sid: submission.sid,
-            pid: submission.pid,
-            uid: submission.uid,
+            submission_id: submission.submission_id,
+            problem_id: submission.problem_id,
+            user_id: submission.user_id,
             status: submission.status,
             score: submission.score,
             language: submission.language,
-            total_time: submission.total_time,
-            total_space: submission.total_space,
+            total_time: submission.time,
+            total_space: submission.space,
             submit_time: submission.submit_time,
             detail: submission.detail,
             file_content: fileContent,
             problem: {
-                pid: submission.problem.pid,
+                problem_id: submission.problem.problem_id,
                 title: submission.problem.title
             },
             user: {
-                uid: submission.user.uid,
+                user_id: submission.user.user_id,
                 username: submission.user.username,
                 nickname: submission.user.nickname
             }
@@ -99,11 +99,11 @@ class SubmissionController extends Controller {
 
     public async submit() {
         const { ctx } = this;
-        const param = ctx.request.body;
-        const language = param.language;
-        const code = param.code;
-        const problem_id = param.pid;
-        const user_id = ctx.state.user_id;
+        const {
+            language, code, problem_id: problemId,
+            contest_id: contestId
+        } = ctx.request.body;
+        const { user_id: userId } = ctx.state;
 
         const submitTime = ctx.helper.getTime();
         if (!ctx.service.submission.checkLanguage(language)) {
@@ -124,37 +124,40 @@ class SubmissionController extends Controller {
         fs.writeFileSync(path.join(workPath, 'src.' + fileExt), code);
 
         const submission = await ctx.repo.Submission.create();
-        submission.uid = user_id;
-        submission.pid = problem_id;
+        submission.user_id = userId;
+        submission.problem_id = problemId;
+        submission.contest_id = contestId;
         submission.language = language;
         submission.submit_time = submitTime;
         submission.status = Judge.JudgeStatus.NO_STATUS;
         submission.code_size = fs.statSync(filePath).size;
-        submission.total_time = 0;
-        submission.total_space = 0;
+        submission.time = 0;
+        submission.space = 0;
         await submission.save();
 
         const submissionDetail = await ctx.repo.SubmissionDetail.create();
-        submissionDetail.sid = submission.sid;
+        submissionDetail.submission_id = submission.submission_id;
         submissionDetail.file_id = codeHash;
         submissionDetail.test_case = [];
         await submissionDetail.save();
 
         const task = await ctx.repo.Task.create();
-        task.submission_id = submission.sid;
-        task.problem_id = submission.pid;
+        task.submission_id = submission.submission_id;
+        task.problem_id = submission.problem_id;
         task.added_time = ctx.helper.getTime();
         task.language = submission.language;
         task.status = TaskStatus.WAITING;
         await task.save();
 
-        const problem = await ctx.repo.Problem.findOne({ where: { pid: problem_id } });
+        const problem = await ctx.repo.Problem.findOne({ where: { problem_id: problemId } });
         problem.submit_count += 1;
 
-        const user = await ctx.repo.User.findOne({ where: { uid: user_id } });
+        const user = await ctx.repo.User.findOne({ where: { user_id: userId } });
         user.submit_count += 1;
 
-        ctx.helper.response(200, 'processed successfully');
+        ctx.helper.success({
+            submission_id: submission.submission_id
+        });
     }
 }
 
