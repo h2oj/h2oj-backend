@@ -212,6 +212,7 @@ class JudgeController extends Controller {
         });
 
         let flag = true;
+        player.score = player.time = player.space = 0;
         for (const problem of player.detail) {
             if (contestContent.problem.includes(submission.problem_id)) {
                 if (problem.problem_id === submission.problem_id) {
