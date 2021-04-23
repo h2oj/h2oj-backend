@@ -32,6 +32,7 @@ export default (app: Application) => {
 
     router.get('/user/detail', controller.user.detail);
     router.get('/user/list', authJwt, controller.user.list);
+    router.get('/user/list_role', authJwt, controller.user.listRole);
     router.post('/user/update', authJwt, controller.user.update);
     router.post('/user/change', authJwt, controller.user.change);
 
