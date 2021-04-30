@@ -44,4 +44,6 @@ export default (app: Application) => {
     router.get('/judge/check_data', judgeJwt, controller.judge.checkData);
     router.get('/judge/get_data', judgeJwt, controller.judge.getData);
     router.get('/judge/get_source', judgeJwt, controller.judge.getSource);
+
+    router.post('/oauth/github', controller.oauth.github);
 };

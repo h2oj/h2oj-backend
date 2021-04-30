@@ -103,8 +103,8 @@ class UserController extends Controller {
         if (param.level) user.level = param.level;
         if (param.avatar) user.avatar = param.avatar;
         if (param.nickname) user.nickname = param.nickname;
-        if (param.description) user.description = param.description;
-        if (param.information) user.information = param.information;
+        if (param.description) user.bio = param.description;
+        if (param.information) user.about_me = param.information;
         if (param.sex) user.sex = param.sex;
         await user.save();
         ctx.helper.response(200, 'processed successfully');
@@ -129,8 +129,8 @@ class UserController extends Controller {
             username: user.username,
             nickname: user.nickname,
             role_id: user.role_id,
-            description: user.description,
-            information: user.information,
+            description: user.bio,
+            information: user.about_me,
             rating: user.rating,
             avatar: user.avatar
         });
@@ -151,8 +151,8 @@ class UserController extends Controller {
 
         if (param.avatar) user.avatar = param.avatar;
         if (param.nickname) user.nickname = param.nickname;
-        if (param.description) user.description = param.description;
-        if (param.information) user.information = param.information;
+        if (param.description) user.bio = param.description;
+        if (param.information) user.about_me = param.information;
         if (param.sex) user.sex = param.sex;
         await user.save();
 
@@ -162,8 +162,8 @@ class UserController extends Controller {
             username: user.username,
             nickname: user.nickname,
             role_id: user.role_id,
-            description: user.description,
-            information: user.information,
+            description: user.bio,
+            information: user.about_me,
             rating: user.rating,
             avatar: user.avatar
         });

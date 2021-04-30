@@ -20,7 +20,9 @@
     "clean": "ets clean"
   },
   "dependencies": {
+    "@h2oj/judge": "^0.2.0",
     "adm-zip": "^0.5.1",
+    "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
     "egg": "^2.29.1",
     "egg-bus": "^1.0.0-alpha.9",
@@ -30,7 +32,6 @@
     "egg-scripts": "^2.13.0",
     "egg-ts-typeorm": "^1.1.12",
     "egg-websocket-plugin": "^1.0.1",
-    "@h2oj/judge": "^0.2.0",
     "mysql": "^2.18.1",
     "typeorm": "^0.2.29"
   },

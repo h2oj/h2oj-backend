@@ -34,10 +34,10 @@ class User extends Model {
     email: string;
 
     @TypeORM.Column({ nullable: true, type: 'varchar', length: 64 })
-    description: string;
+    bio: string;
 
     @TypeORM.Column({ nullable: true, type: 'text' })
-    information: string;
+    about_me: string;
 
     @TypeORM.Column({ nullable: false, type: 'tinyint', default: 0 })
     sex: number;

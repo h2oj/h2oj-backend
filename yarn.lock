@@ -110,6 +110,16 @@
     urijs "^1.19.0"
     utility "^1.15.0"
 
+"@h2oj/judge@^0.2.0":
+  version "1.0.0"
+  resolved "https://r.cnpmjs.org/@h2oj/judge/download/@h2oj/judge-1.0.0.tgz#e4ef6c5065fed352aad2b183f1519264430615ef"
+  integrity sha1-5O9sUGX+01Kq0rGD8VGSZEMGFe8=
+  dependencies:
+    adm-zip "^0.5.5"
+    axios "^0.21.1"
+    ws "^7.4.4"
+    yaml "^1.10.0"
+
 "@jest/types@^24.9.0":
   version "24.9.0"
   resolved "https://r.cnpmjs.org/@jest/types/download/@jest/types-24.9.0.tgz#63cb26cb7500d069e5a389441a7c6ab5e909fc59"
@@ -408,6 +418,11 @@ adm-zip@^0.5.1:
   resolved "https://registry.npmjs.org/adm-zip/-/adm-zip-0.5.1.tgz#32e51c6fe88370f4389b424567b78a345e79ebc6"
   integrity sha512-a5ABmIFUJ9OxHV5zrXM9Q41JzpRIflFtdgpL4UQM9DsTHHxQzPRaeyAdnMW7kxL0NRWm/NHafJdj6pO+ty7L2g==
 
+adm-zip@^0.5.5:
+  version "0.5.5"
+  resolved "https://r.cnpmjs.org/adm-zip/download/adm-zip-0.5.5.tgz#b6549dbea741e4050309f1bb4d47c47397ce2c4f"
+  integrity sha1-tlSdvqdB5AUDCfG7TUfEc5fOLE8=
+
 agent-base@4, agent-base@^4.2.0, agent-base@^4.3.0:
   version "4.3.0"
   resolved "https://r.cnpmjs.org/agent-base/download/agent-base-4.3.0.tgz#8165f01c436009bccad0b1d122f05ed770efc6ee"
@@ -633,6 +648,13 @@ await-first@^1.0.0:
   integrity sha1-Bq+m23zr5BK+m+VOgt2MbLTNskE=
   dependencies:
     ee-first "^1.1.1"
+
+axios@^0.21.1:
+  version "0.21.1"
+  resolved "https://r.cnpmjs.org/axios/download/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
+  integrity sha1-IlY0gZYvTWvemnbVFu8OXTwJsrg=
+  dependencies:
+    follow-redirects "^1.10.0"
 
 babel-code-frame@^6.26.0:
   version "6.26.0"
@@ -3227,6 +3249,11 @@ flat@^4.1.0:
   dependencies:
     is-buffer "~2.0.3"
 
+follow-redirects@^1.10.0:
+  version "1.14.0"
+  resolved "https://r.cnpmjs.org/follow-redirects/download/follow-redirects-1.14.0.tgz#f5d260f95c5f8c105894491feee5dc8993b402fe"
+  integrity sha1-9dJg+VxfjBBYlEkf7uXciZO0Av4=
+
 for-each@^0.3.3:
   version "0.3.3"
   resolved "https://registry.npmjs.org/for-each/-/for-each-0.3.3.tgz#69b447e88a0a5d32c3e7084f3f1710034b21376e"
@@ -3548,13 +3575,6 @@ highlight.js@^9.6.0:
   version "9.18.3"
   resolved "https://r.cnpmjs.org/highlight.js/download/highlight.js-9.18.3.tgz#a1a0a2028d5e3149e2380f8a865ee8516703d634"
   integrity sha1-oaCiAo1eMUniOA+Khl7oUWcD1jQ=
-
-hoj-judger@^0.2.0:
-  version "0.2.3"
-  resolved "https://registry.npm.taobao.org/hoj-judger/download/hoj-judger-0.2.3.tgz#63db426defa4e28a1ab433659e96a8aac938d00c"
-  integrity sha1-Y9tCbe+k4ooatDNlnpaoqsk40Aw=
-  dependencies:
-    yaml "^1.10.0"
 
 home-or-tmp@^2.0.0:
   version "2.0.0"
@@ -6849,6 +6869,11 @@ ws@^7.2.1:
   version "7.4.4"
   resolved "https://r.cnpmjs.org/ws/download/ws-7.4.4.tgz#383bc9742cb202292c9077ceab6f6047b17f2d59"
   integrity sha1-ODvJdCyyAikskHfOq29gR7F/LVk=
+
+ws@^7.4.4:
+  version "7.4.5"
+  resolved "https://r.cnpmjs.org/ws/download/ws-7.4.5.tgz#a484dd851e9beb6fdb420027e3885e8ce48986c1"
+  integrity sha1-pITdhR6b62/bQgAn44hejOSJhsE=
 
 wt@^1.2.0:
   version "1.2.0"
