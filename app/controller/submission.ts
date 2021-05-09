@@ -67,7 +67,10 @@ class SubmissionController extends Controller {
         await submission.loadDetail();
 
         let fileContent = 'unshown';
-        if (ctx.service.submission.checkLanguageCanShow(submission.language)) {
+        if (
+            ctx.service.submission.checkLanguageCanShow(submission.language) &&
+            (submission.contest_id ? !ctx.service.contest.checkContestState(submission.contest_id) : false)
+        ) {
             const fileExt = ctx.service.submission.getLanguageFileExtension(submission.language);
             const fileName = path.join(ctx.app.config.h2oj.path.code, submission.detail.file_id + '.' + fileExt);
             fileContent = fs.readFileSync(fileName, { encoding: 'utf-8' });
@@ -105,10 +108,22 @@ class SubmissionController extends Controller {
         } = ctx.request.body;
         const { user_id: userId } = ctx.state;
 
-        const submitTime = ctx.helper.getTime();
+        const submitTime = Math.floor(ctx.starttime / 1000);
         if (!ctx.service.submission.checkLanguage(language)) {
             ctx.helper.response(5001, 'unavailable language');
             return;
+        }
+
+        if (contestId) {
+            if (!ctx.service.contest.checkContestState(contestId)) {
+                ctx.helper.response(4003, 'contest not started');
+                return;
+            }
+
+            if (!ctx.service.contest.checkUserInContest(userId, contestId)) {
+                ctx.helper.response(4002, 'haven\'t joined contest');
+                return;
+            }
         }
 
         const codeHash = ctx.service.submission.generateCodeHash(code);
