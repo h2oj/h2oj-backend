@@ -7,16 +7,16 @@ enum OAuthType {
 
 @TypeORM.Entity('oauth')
 class OAuth extends Model {
-    @TypeORM.PrimaryGeneratedColumn()
+    @TypeORM.PrimaryGeneratedColumn({ name: 'id' })
     id: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
-    user_id: number;
+    @TypeORM.Column({ name: 'user_id', nullable: false, type: 'integer' })
+    userId: number;
 
-    @TypeORM.Column({ nullable: false, type: 'varchar' })
-    oauth_id: string;
+    @TypeORM.Column({ name: 'oauth_id', nullable: false, type: 'varchar' })
+    oauthId: string;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
+    @TypeORM.Column({ name: 'type', nullable: false, type: 'integer' })
     type: OAuthType;
 }
 

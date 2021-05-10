@@ -5,13 +5,13 @@ interface ContestProblemSet extends Array<number> {}
 
 @TypeORM.Entity('contest_content')
 class ContestContent extends Model {
-    @TypeORM.PrimaryColumn({ type: 'integer' })
-    contest_id: number;
+    @TypeORM.PrimaryColumn({ name: 'contest_id', type: 'integer' })
+    contestId: number;
 
-    @TypeORM.Column({ nullable: true, type: 'text' })
+    @TypeORM.Column({ name: 'content', nullable: true, type: 'text' })
     content: string;
 
-    @TypeORM.Column({ nullable: true, type: 'json' })
+    @TypeORM.Column({ name: 'problem', nullable: true, type: 'json' })
     problem: ContestProblemSet;
 }
 

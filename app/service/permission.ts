@@ -5,21 +5,21 @@ class PermissionService extends Service {
         const { ctx } = this;
         const user = await ctx.repo.User.findOne({
             where: {
-                user_id: user_id
+                userId: user_id
             }
         });
         const permissionType = await ctx.repo.PermissionType.findOne({
             where: {
-                permission_name: permission_name
+                permissionName: permission_name
             }
         });
         const permission = await ctx.repo.Permission.findOne({
             where: {
-                role_id: user.role_id,
-                permission_id: permissionType.permission_id
+                roleId: user.roleId,
+                permissionId: permissionType.permissionId
             }
         });
-        return permission && permission.has_permission;
+        return permission && permission.hasPermission;
     }
 }
 

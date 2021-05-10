@@ -13,7 +13,7 @@ class SubmissionController extends Controller {
         const each = param.each || 15;
         let [submissions, length] = await ctx.repo.Submission.findAndCount({
             order: {
-                submit_time: 'DESC'
+                submitTime: 'DESC'
             },
             skip: (page - 1) * each,
             take: each
@@ -26,21 +26,21 @@ class SubmissionController extends Controller {
                 await submission.loadProblem();
                 await submission.loadUser();
                 return {
-                    submission_id: submission.submission_id,
-                    problem_id: submission.problem_id,
-                    user_id: submission.user_id,
+                    submission_id: submission.submissionId,
+                    problem_id: submission.problemId,
+                    user_id: submission.userId,
                     status: submission.status,
                     score: submission.score,
                     language: submission.language,
                     total_time: submission.time,
                     total_space: submission.space,
-                    submit_time: submission.submit_time,
+                    submit_time: submission.submitTime,
                     problem: {
-                        problem_id: submission.problem.problem_id,
+                        problem_id: submission.problem.problemId,
                         title: submission.problem.title
                     },
                     user: {
-                        user_id: submission.user.user_id,
+                        user_id: submission.user.userId,
                         username: submission.user.username,
                         nickname: submission.user.nickname
                     }
@@ -54,7 +54,7 @@ class SubmissionController extends Controller {
         const param = ctx.query;
 
         const submission = await ctx.repo.Submission.findOne({
-            where: { submission_id: param.submission_id }
+            where: { submissionId: param.submission_id }
         });
 
         if (!submission) {
@@ -69,31 +69,31 @@ class SubmissionController extends Controller {
         let fileContent = 'unshown';
         if (
             ctx.service.submission.checkLanguageCanShow(submission.language) &&
-            (submission.contest_id ? !ctx.service.contest.checkContestState(submission.contest_id) : false)
+            (submission.contestId ? !ctx.service.contest.checkContestState(submission.contestId) : false)
         ) {
             const fileExt = ctx.service.submission.getLanguageFileExtension(submission.language);
-            const fileName = path.join(ctx.app.config.h2oj.path.code, submission.detail.file_id + '.' + fileExt);
+            const fileName = path.join(ctx.app.config.h2oj.path.code, submission.detail.fileId + '.' + fileExt);
             fileContent = fs.readFileSync(fileName, { encoding: 'utf-8' });
         }
 
         ctx.helper.response(200, 'processed successfully', {
-            submission_id: submission.submission_id,
-            problem_id: submission.problem_id,
-            user_id: submission.user_id,
+            submission_id: submission.submissionId,
+            problem_id: submission.problemId,
+            user_id: submission.userId,
             status: submission.status,
             score: submission.score,
             language: submission.language,
             total_time: submission.time,
             total_space: submission.space,
-            submit_time: submission.submit_time,
+            submit_time: submission.submitTime,
             detail: submission.detail,
             file_content: fileContent,
             problem: {
-                problem_id: submission.problem.problem_id,
+                problem_id: submission.problem.problemId,
                 title: submission.problem.title
             },
             user: {
-                user_id: submission.user.user_id,
+                user_id: submission.user.userId,
                 username: submission.user.username,
                 nickname: submission.user.nickname
             }
@@ -139,39 +139,39 @@ class SubmissionController extends Controller {
         fs.writeFileSync(path.join(workPath, 'src.' + fileExt), code);
 
         const submission = await ctx.repo.Submission.create();
-        submission.user_id = userId;
-        submission.problem_id = problemId;
-        submission.contest_id = contestId;
+        submission.userId = userId;
+        submission.problemId = problemId;
+        submission.contestId = contestId;
         submission.language = language;
-        submission.submit_time = submitTime;
+        submission.submitTime = submitTime;
         submission.status = Judge.JudgeStatus.NO_STATUS;
-        submission.code_size = fs.statSync(filePath).size;
+        submission.codeSize = fs.statSync(filePath).size;
         submission.time = 0;
         submission.space = 0;
         await submission.save();
 
         const submissionDetail = await ctx.repo.SubmissionDetail.create();
-        submissionDetail.submission_id = submission.submission_id;
-        submissionDetail.file_id = codeHash;
-        submissionDetail.test_case = [];
+        submissionDetail.submissionId = submission.submissionId;
+        submissionDetail.fileId = codeHash;
+        submissionDetail.testCase = [];
         await submissionDetail.save();
 
         const task = await ctx.repo.Task.create();
-        task.submission_id = submission.submission_id;
-        task.problem_id = submission.problem_id;
-        task.added_time = ctx.helper.getTime();
+        task.submissionId = submission.submissionId;
+        task.problemId = submission.problemId;
+        task.time = ctx.helper.getTime();
         task.language = submission.language;
         task.status = TaskStatus.WAITING;
         await task.save();
 
-        const problem = await ctx.repo.Problem.findOne({ where: { problem_id: problemId } });
-        problem.submit_count += 1;
+        const problem = await ctx.repo.Problem.findOne({ where: { problemId: problemId } });
+        problem.submitCount += 1;
 
-        const user = await ctx.repo.User.findOne({ where: { user_id: userId } });
-        user.submit_count += 1;
+        const user = await ctx.repo.User.findOne({ where: { userId: userId } });
+        user.submitCount += 1;
 
         ctx.helper.success({
-            submission_id: submission.submission_id
+            submission_id: submission.submissionId
         });
     }
 }

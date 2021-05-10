@@ -8,22 +8,22 @@ enum ContestMode {
 
 @TypeORM.Entity('contest')
 class Contest extends Model {
-    @TypeORM.PrimaryGeneratedColumn()
-    contest_id: number;
+    @TypeORM.PrimaryGeneratedColumn({ name: 'contest_id' })
+    contestId: number;
 
-    @TypeORM.Column({ nullable: false, type: 'varchar', length: 64 })
+    @TypeORM.Column({ name: 'title', nullable: false, type: 'varchar', length: 64 })
     title: string;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
-    user_id: number;
+    @TypeORM.Column({ name: 'user_id', nullable: false, type: 'integer' })
+    userId: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
-    start_time: number;
+    @TypeORM.Column({ name: 'start_time', nullable: false, type: 'integer' })
+    startTime: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
-    end_time: number;
+    @TypeORM.Column({ name: 'end_time', nullable: false, type: 'integer' })
+    endTime: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer', default: ContestMode.IOI })
+    @TypeORM.Column({ name: 'mode', nullable: false, type: 'integer', default: ContestMode.IOI })
     mode: ContestMode;
 
     content?: ContestContent;
@@ -31,7 +31,7 @@ class Contest extends Model {
     async loadContent() {
         if (!this.content) {
             this.content = await ContestContent.findOne({
-                where: { contest_id: this.contest_id }
+                where: { contestId: this.contestId }
             });
         }
     }

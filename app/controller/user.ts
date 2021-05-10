@@ -40,14 +40,14 @@ class UserController extends Controller {
             count: length,
             page_count: Math.ceil(length / pageSize),
             users: users.map((user: User) => ({
-                user_id: user.user_id,
+                user_id: user.userId,
                 username: user.username,
                 nickname: user.nickname,
-                role_id: user.role_id,
+                role_id: user.roleId,
                 email: user.email,
                 level: user.level,
                 tag: user.tag,
-                reg_time: user.reg_time
+                reg_time: user.registerTime
             }))
         });
     }
@@ -71,8 +71,8 @@ class UserController extends Controller {
             // count: length,
             // page_count: Math.ceil(length / each),
             roles: roles.map((role: UserRole) => ({
-                role_id: role.role_id,
-                name: role.role_name
+                role_id: role.roleId,
+                name: role.roleName
             }))
         });
     }
@@ -91,12 +91,12 @@ class UserController extends Controller {
         }
 
         const user = await ctx.repo.User.findOne({
-            where: { user_id: param.user_id }
+            where: { userId: param.user_id }
         });
 
         if (param.role_id) {
             if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_USER_ROLE'))
-                user.role_id = param.role_id;
+                user.roleId = param.role_id;
             else ctx.helper.failure(403, 'permission denied');
         }
         if (param.tag) user.tag = param.tag;
@@ -104,7 +104,7 @@ class UserController extends Controller {
         if (param.avatar) user.avatar = param.avatar;
         if (param.nickname) user.nickname = param.nickname;
         if (param.description) user.bio = param.description;
-        if (param.information) user.about_me = param.information;
+        if (param.information) user.aboutMe = param.information;
         if (param.sex) user.sex = param.sex;
         await user.save();
         ctx.helper.response(200, 'processed successfully');
@@ -115,7 +115,7 @@ class UserController extends Controller {
         const param = ctx.query;
 
         const user = await ctx.repo.User.findOne({
-            where: { user_id: param.user_id }
+            where: { userId: param.user_id }
         });
 
         if (!user) {
@@ -124,13 +124,13 @@ class UserController extends Controller {
         }
 
         ctx.helper.response(200, 'processed successfully', {
-            user_id: user.user_id,
+            user_id: user.userId,
             sex: user.sex,
             username: user.username,
             nickname: user.nickname,
-            role_id: user.role_id,
+            role_id: user.roleId,
             description: user.bio,
-            information: user.about_me,
+            information: user.aboutMe,
             rating: user.rating,
             avatar: user.avatar
         });
@@ -141,7 +141,7 @@ class UserController extends Controller {
         const param = ctx.request.body;
 
         const user = await ctx.repo.User.findOne({
-            where: { user_id: ctx.state.user_id }
+            where: { userId: ctx.state.user_id }
         });
 
         if (!user) {
@@ -152,18 +152,18 @@ class UserController extends Controller {
         if (param.avatar) user.avatar = param.avatar;
         if (param.nickname) user.nickname = param.nickname;
         if (param.description) user.bio = param.description;
-        if (param.information) user.about_me = param.information;
+        if (param.information) user.aboutMe = param.information;
         if (param.sex) user.sex = param.sex;
         await user.save();
 
         ctx.helper.response(200, 'processed successfully', {
-            user_id: user.user_id,
+            user_id: user.userId,
             sex: user.sex,
             username: user.username,
             nickname: user.nickname,
-            role_id: user.role_id,
+            role_id: user.roleId,
             description: user.bio,
-            information: user.about_me,
+            information: user.aboutMe,
             rating: user.rating,
             avatar: user.avatar
         });

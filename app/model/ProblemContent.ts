@@ -17,16 +17,16 @@ interface ProblemSampleDataSet extends Array<ProblemSampleData> {}
 
 @TypeORM.Entity('problem_content')
 class ProblemContent extends Model {
-    @TypeORM.PrimaryColumn({ nullable: false, type: 'integer' })
+    @TypeORM.PrimaryColumn({ name: 'id', nullable: false, type: 'integer' })
     id: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
-    problem_id: number;
+    @TypeORM.Column({ name: 'problem_id', nullable: false, type: 'integer' })
+    problemId: number;
 
-    @TypeORM.Column({ type: 'json' })
+    @TypeORM.Column({ name: 'content', type: 'json' })
     content: ProblemContentData;
 
-    @TypeORM.Column({ type: 'json' })
+    @TypeORM.Column({ name: 'sample', type: 'json' })
     sample: ProblemSampleDataSet;
 }
 

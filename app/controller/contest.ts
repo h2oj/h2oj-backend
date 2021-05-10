@@ -15,20 +15,20 @@ class ContestController extends Controller {
 
         const contest = await Contest.create();
         contest.title = param.title;
-        contest.user_id = ctx.state.user_id;
-        contest.start_time = param.start_time || ctx.helper.getTime();
-        contest.end_time = param.end_time || ctx.helper.getTime() + 86400;
+        contest.userId = ctx.state.user_id;
+        contest.startTime = param.start_time || ctx.helper.getTime();
+        contest.endTime = param.end_time || ctx.helper.getTime() + 86400;
         contest.mode = param.mode || ContestMode.IOI;
         await contest.save();
 
         const contestContent = await ContestContent.create();
-        contestContent.contest_id = contest.contest_id;
+        contestContent.contestId = contest.contestId;
         if (param.content) contestContent.content = param.content;
         if (param.problem) contestContent.problem = param.problem;
         await contestContent.save();
 
         ctx.helper.response(200, 'processed successfully', {
-            contest_id: contest.contest_id
+            contest_id: contest.contestId
         });
     }
 
@@ -36,23 +36,23 @@ class ContestController extends Controller {
         const { ctx } = this;
         const param = ctx.query;
 
-        const contest = await ctx.repo.Contest.findOne({ where: { contest_id: param.contest_id } });
+        const contest = await ctx.repo.Contest.findOne({ where: { contestId: param.contest_id } });
         await contest.loadContent();
 
         const problemDetail = [];
         for (const problemID of contest.content.problem) {
-            const problem = await ctx.repo.Problem.findOne({ where: { problem_id: problemID } });
+            const problem = await ctx.repo.Problem.findOne({ where: { problemId: problemID } });
             // TODO permission
-            problemDetail.push({ problem_id: problem.problem_id, title: problem.title });
+            problemDetail.push({ problem_id: problem.problemId, title: problem.title });
         }
 
         ctx.helper.response(200, 'processed successfully', {
-            contest_id: contest.contest_id,
+            contest_id: contest.contestId,
             title: contest.title,
             mode: contest.mode,
-            user_id: contest.user_id,
-            start_time: contest.start_time,
-            end_time: contest.end_time,
+            user_id: contest.userId,
+            start_time: contest.startTime,
+            end_time: contest.endTime,
             content: contest.content.content,
             problem: contest.content.problem,
             problem_detail: problemDetail
@@ -74,11 +74,11 @@ class ContestController extends Controller {
             count: length,
             page_count: Math.ceil(length / each),
             contests: contests.map((contest: Contest) => ({
-                contest_id: contest.contest_id,
+                contest_id: contest.contestId,
                 mode: contest.mode,
                 title: contest.title,
-                start_time: contest.start_time,
-                end_time: contest.end_time
+                start_time: contest.startTime,
+                end_time: contest.endTime
             }))
         });
     }
@@ -93,7 +93,7 @@ class ContestController extends Controller {
             return;
         }
 
-        const contest = await Contest.findOne({ where: { contest_id: param.contest_id } });
+        const contest = await Contest.findOne({ where: { contestId: param.contest_id } });
         if (!contest) {
             ctx.helper.failure(422, 'unprocessable entity');
             return;
@@ -102,8 +102,8 @@ class ContestController extends Controller {
 
         contest.title = param.title;
         contest.mode = param.mode;
-        contest.start_time = param.start_time;
-        contest.end_time = param.end_time;
+        contest.startTime = param.start_time;
+        contest.endTime = param.end_time;
         contest.content.content = param.content;
         contest.content.problem = param.problem;
 
@@ -120,8 +120,8 @@ class ContestController extends Controller {
 
         let contestPlayer = await ContestPlayer.findOne({
             where: {
-                contest_id: contestId,
-                user_id: userId
+                contestId: contestId,
+                userId: userId
             }
         });
 
@@ -137,8 +137,8 @@ class ContestController extends Controller {
 
         let contestPlayer = await ContestPlayer.findOne({
             where: {
-                contest_id: contestId,
-                user_id: userId
+                contestId: contestId,
+                userId: userId
             }
         });
 
@@ -148,8 +148,8 @@ class ContestController extends Controller {
         }
 
         contestPlayer = await ContestPlayer.create();
-        contestPlayer.contest_id = contestId;
-        contestPlayer.user_id = userId;
+        contestPlayer.contestId = contestId;
+        contestPlayer.userId = userId;
         contestPlayer.detail = [];
         await contestPlayer.save();
 
@@ -165,7 +165,7 @@ class ContestController extends Controller {
         } = ctx.query;
 
         let [ contestPlayers, count ] = await ContestPlayer.findAndCount({
-            where: { contest_id: contestId },
+            where: { contestId: contestId },
             order: { score: 'DESC' },
             skip: (pageIndex - 1) * itemCount,
             take: itemCount
@@ -177,7 +177,7 @@ class ContestController extends Controller {
             ranklist: await Promise.all(contestPlayers.map(async (player: ContestPlayer) => {
                 await player.loadUser();
                 return {
-                    user_id: player.user_id,
+                    user_id: player.userId,
                     nickname: player.user.nickname,
                     score: player.score,
                     time: player.time,

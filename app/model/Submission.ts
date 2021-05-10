@@ -7,38 +7,38 @@ import { JudgeStatus } from '@h2oj/judge';
 
 @TypeORM.Entity('submission')
 class Submission extends Model {
-    @TypeORM.PrimaryGeneratedColumn()
-    submission_id: number;
+    @TypeORM.PrimaryGeneratedColumn({ name: 'submission_id' })
+    submissionId: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
-    user_id: number;
+    @TypeORM.Column({ name: 'user_id', nullable: false, type: 'integer' })
+    userId: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
-    problem_id: number;
+    @TypeORM.Column({ name: 'problem_id', nullable: false, type: 'integer' })
+    problemId: number;
 
-    @TypeORM.Column({ nullable: false, type: 'varchar', length: 16 })
+    @TypeORM.Column({ name: 'language', nullable: false, type: 'varchar', length: 16 })
     language: string;
 
-    @TypeORM.Column({ nullable: true, type: 'integer' })
+    @TypeORM.Column({ name: 'status', nullable: true, type: 'integer' })
     status: JudgeStatus;
 
-    @TypeORM.Column({ nullable: true, type: 'integer' })
+    @TypeORM.Column({ name: 'time', nullable: true, type: 'integer' })
     time: number;
 
-    @TypeORM.Column({ nullable: true, type: 'integer' })
+    @TypeORM.Column({ name: 'space', nullable: true, type: 'integer' })
     space: number;
 
-    @TypeORM.Column({ nullable: true, type: 'integer' })
-    code_size: number;
+    @TypeORM.Column({ name: 'code_size', nullable: true, type: 'integer' })
+    codeSize: number;
 
-    @TypeORM.Column({ nullable: true, type: 'integer' })
-    submit_time: number;
+    @TypeORM.Column({ name: 'submit_time', nullable: true, type: 'integer' })
+    submitTime: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer', default: 0 })
+    @TypeORM.Column({ name: 'score', nullable: false, type: 'integer', default: 0 })
     score: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer', default: 0 })
-    contest_id: number;
+    @TypeORM.Column({ name: 'contest_id', nullable: false, type: 'integer', default: 0 })
+    contestId: number;
 
     user?: User;
     problem?: Problem;
@@ -50,23 +50,23 @@ class Submission extends Model {
     }
 
     async loadUser() {
-        if (!this.user && this.user_id !== undefined) {
+        if (!this.user && this.userId !== undefined) {
             this.user = await User.findOne({
-                where: { user_id: this.user_id }
+                where: { userId: this.userId }
             });
         }
     }
 
     async loadProblem() {
-        if (!this.problem && this.problem_id) {
-            this.problem = await Problem.fromPid(this.problem_id);
+        if (!this.problem && this.problemId) {
+            this.problem = await Problem.fromPid(this.problemId);
         }
     }
 
     async loadDetail() {
-        if (!this.detail && this.submission_id) {
+        if (!this.detail && this.submissionId) {
             this.detail = await SubmissionDetail.findOne({
-                where: { submission_id: this.submission_id }
+                where: { submissionId: this.submissionId }
             });
         }
     }

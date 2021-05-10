@@ -24,7 +24,7 @@ class ProblemController extends Controller {
         }
         else {
             [problems, length] = await ctx.repo.Problem.findAndCount({
-                where: { is_public: 1 },
+                where: { isPublic: 1 },
                 skip: (page - 1) * each,
                 take: each
             });
@@ -34,11 +34,11 @@ class ProblemController extends Controller {
             count: length,
             page_count: Math.ceil(length / each),
             problems: problems.map((problem: Problem) => ({
-                problem_id: problem.problem_id,
+                problem_id: problem.problemId,
                 title: problem.title,
                 difficulty: problem.difficulty,
-                ac_count: problem.ac_count,
-                submit_count: problem.submit_count
+                ac_count: problem.acceptCount,
+                submit_count: problem.submitCount
             }))
         });
     }
@@ -48,21 +48,21 @@ class ProblemController extends Controller {
         const param = ctx.query;
 
         const problem = await ctx.repo.Problem.findOne({
-            where: { problem_id: param.problem_id }
+            where: { problemId: param.problem_id }
         });
 
-        if (!problem || !problem.is_public) {
+        if (!problem || !problem.isPublic) {
             ctx.helper.response(2001, 'no data');
             return;
         }
 
         if (param.brief == true) {
             ctx.helper.response(200, 'processed successfully', {
-                problem_id: problem.problem_id,
+                problem_id: problem.problemId,
                 title: problem.title,
                 difficulty: problem.difficulty,
-                ac_count: problem.ac_count,
-                submit_count: problem.submit_count
+                ac_count: problem.acceptCount,
+                submit_count: problem.submitCount
             });
         }
 
@@ -70,15 +70,15 @@ class ProblemController extends Controller {
         await problem.loadContent();
 
         ctx.helper.response(200, 'processed successfully', {
-            problem_id: problem.problem_id,
+            problem_id: problem.problemId,
             title: problem.title,
             difficulty: problem.difficulty,
-            ac_count: problem.ac_count,
-            submit_count: problem.submit_count,
+            ac_count: problem.acceptCount,
+            submit_count: problem.submitCount,
             content: problem.content.content,
             sample: problem.content.sample,
             user: {
-                user_id: problem.publisher.user_id,
+                user_id: problem.publisher.userId,
                 username: problem.publisher.username,
                 nickname: problem.publisher.nickname
             }
@@ -90,7 +90,7 @@ class ProblemController extends Controller {
         const param = ctx.request.body;
         if (await ctx.service.permission.checkPermission(ctx.state.user_id, 'CHANGE_PROBLEM')){
             const problem = await ctx.repo.Problem.findOne({
-                where: { problem_id: param.problem_id }
+                where: { problemId: param.problem_id }
             });
 
             if (!problem) {

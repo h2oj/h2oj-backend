@@ -53,26 +53,26 @@ class AuthController extends Controller {
             }
         }
 
-        const password = CryptoJS.MD5(param.password + user.crypto_salt).toString();
+        const password = CryptoJS.MD5(param.password + user.cryptoSalt).toString();
         if (password !== user.password) {
             ctx.helper.response(1003,  'incorrect name or password');
             return;
         }
         
         const token = app.jwt.sign({
-            user_id: user.user_id,
-            role_id: user.role_id,
+            user_id: user.userId,
+            role_id: user.roleId,
             timestamp: Math.floor(Number(new Date()) / 1000)
         }, app.config.jwt.secret);
 
-        user.last_login = ctx.helper.getTime();
+        user.lastLoginTime = ctx.helper.getTime();
         await user.save();
 
         ctx.helper.response(200, 'processed successfully', {
             username: user.username,
             nickname: user.nickname,
-            role_id: user.role_id,
-            user_id: user.user_id,
+            role_id: user.roleId,
+            user_id: user.userId,
             avatar: user.avatar,
             token: token
         });

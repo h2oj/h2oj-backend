@@ -3,11 +3,11 @@ import { Model } from './definition';
 
 @TypeORM.Entity('permission_type')
 class PermissionType extends Model {
-    @TypeORM.PrimaryColumn({ type: 'integer' })
-    permission_id: number;
+    @TypeORM.PrimaryColumn({ name: 'permission_id', type: 'integer' })
+    permissionId: number;
 
-    @TypeORM.Column({ type: 'varchar', length: 32 })
-    permission_name: string;
+    @TypeORM.Column({ name: 'permission_name', type: 'varchar', length: 32 })
+    permissionName: string;
 }
 
 export default PermissionType;

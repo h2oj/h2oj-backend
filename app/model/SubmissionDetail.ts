@@ -13,14 +13,14 @@ interface SubmissionTestCaseSet extends Array<SubmissionTestCase> {}
 
 @TypeORM.Entity('submission_detail')
 class SubmissionDetail extends Model {
-    @TypeORM.PrimaryColumn()
-    submission_id: number;
+    @TypeORM.PrimaryColumn({ name: 'submission_id' })
+    submissionId: number;
 
-    @TypeORM.Column({ type: 'json' })
-    test_case: SubmissionTestCaseSet;
+    @TypeORM.Column({ name: 'test_case', type: 'json' })
+    testCase: SubmissionTestCaseSet;
 
-    @TypeORM.Column({ type: 'char', length: 32 })
-    file_id: string;
+    @TypeORM.Column({ name: 'file_id', type: 'char', length: 32 })
+    fileId: string;
 }
 
 export default SubmissionDetail;

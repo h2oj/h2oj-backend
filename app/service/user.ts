@@ -25,10 +25,10 @@ class UserService extends Service {
         user.username = payload.username;
         user.nickname = payload.username;
         user.password = CryptoJS.MD5(payload.password + salt).toString();
-        user.crypto_salt = salt;
+        user.cryptoSalt = salt;
         user.email = payload.email;
-        user.reg_time = ctx.helper.getTime();
-        user.last_login = user.reg_time;
+        user.registerTime = ctx.helper.getTime();
+        user.lastLoginTime = user.registerTime;
         await user.save();
 
         return user;
@@ -36,7 +36,7 @@ class UserService extends Service {
 
     public async findById(user_id: number): Promise<User> {
         let user = await User.findOne({
-            where: { user_id: user_id }
+            where: { userId: user_id }
         });
         return user;
     }

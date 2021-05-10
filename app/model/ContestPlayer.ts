@@ -14,32 +14,32 @@ interface ContestPlayerDetail extends Array<ContestProblemDetail> {}
 
 @TypeORM.Entity('contest_player')
 class ContestPlayer extends Model {
-    @TypeORM.PrimaryGeneratedColumn()
+    @TypeORM.PrimaryGeneratedColumn({ name: 'id' })
     id: number;
 
-    @TypeORM.Column({ type: 'integer' })
-    contest_id: number;
+    @TypeORM.Column({ name: 'contest_id', type: 'integer' })
+    contestId: number;
 
-    @TypeORM.Column({ type: 'integer' })
-    user_id: number;
+    @TypeORM.Column({ name: 'user_id', type: 'integer' })
+    userId: number;
 
-    @TypeORM.Column({ type: 'integer', default: 0 })
+    @TypeORM.Column({ name: 'score', type: 'integer', default: 0 })
     score: number;
 
-    @TypeORM.Column({ type: 'integer', default: 0 })
+    @TypeORM.Column({ name: 'time', type: 'integer', default: 0 })
     time: number;
 
-    @TypeORM.Column({ type: 'integer', default: 0 })
+    @TypeORM.Column({ name: 'space', type: 'integer', default: 0 })
     space: number;
     
-    @TypeORM.Column({ nullable: true, type: 'json' })
+    @TypeORM.Column({ name: 'detail', nullable: true, type: 'json' })
     detail: ContestPlayerDetail;
 
     user?: User;
 
     public async loadUser() {
-        if (this.user_id && !this.user) {
-            this.user = await User.findOne({ where: { user_id: this.user_id } });
+        if (this.userId && !this.user) {
+            this.user = await User.findOne({ where: { userId: this.userId } });
         }
     }
 }

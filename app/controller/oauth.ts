@@ -8,16 +8,16 @@ class OAuthController extends Controller {
         const { ctx, app } = this;
 
         const user = await User.findOne({
-            where: { user_id: oauth.user_id }
+            where: { userId: oauth.userId }
         });
 
         const token = app.jwt.sign({
-            user_id: user.user_id,
-            role_id: user.role_id,
+            user_id: user.userId,
+            role_id: user.roleId,
             timestamp: Math.floor(Number(new Date()) / 1000)
         }, app.config.jwt.secret);
 
-        user.last_login = ctx.helper.getTime();
+        user.lastLoginTime = ctx.helper.getTime();
         await user.save();
 
         return [token, user];
@@ -55,8 +55,8 @@ class OAuthController extends Controller {
         user.bio = bio;
 
         const oauth = await OAuth.create();
-        oauth.oauth_id = oauthID;
-        oauth.user_id = user.user_id;
+        oauth.oauthId = oauthID;
+        oauth.userId = user.userId;
         oauth.type = type;
     }
 
@@ -91,7 +91,7 @@ class OAuthController extends Controller {
         }
 
         const oauth = await OAuth.findOne({
-            where: { oauth_id: resUser.data.id, type: OAuthType.GITHUB }
+            where: { oauthId: resUser.data.id, type: OAuthType.GITHUB }
         });
 
         if (oauth) {
@@ -100,8 +100,8 @@ class OAuthController extends Controller {
                 signin: true,
                 username: user.username,
                 nickname: user.nickname,
-                role_id: user.role_id,
-                user_id: user.user_id,
+                role_id: user.roleId,
+                user_id: user.userId,
                 avatar: user.avatar,
                 token: token
             });

@@ -5,29 +5,29 @@ import User from './User';
 
 @TypeORM.Entity('problem')
 class Problem extends Model {
-    @TypeORM.PrimaryColumn({ nullable: false, type: 'integer' })
-    problem_id: number;
+    @TypeORM.PrimaryColumn({ name: 'problem_id', nullable: false, type: 'integer' })
+    problemId: number;
 
-    @TypeORM.Column({ nullable: false, type: 'tinyint' })
+    @TypeORM.Column({ name: 'type', nullable: false, type: 'tinyint' })
     type: number;
 
-    @TypeORM.Column({ nullable: false, type: 'varchar', length: 64 })
+    @TypeORM.Column({ name: 'title', nullable: false, type: 'varchar', length: 64 })
     title: string;
 
-    @TypeORM.Column({ nullable: false, type: 'tinyint' })
+    @TypeORM.Column({ name: 'difficulty', nullable: false, type: 'tinyint' })
     difficulty: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer'})
-    ac_count: number;
+    @TypeORM.Column({ name: 'accept_count', nullable: false, type: 'integer'})
+    acceptCount: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer'})
-    submit_count: number;
+    @TypeORM.Column({ name: 'submit_count', nullable: false, type: 'integer'})
+    submitCount: number;
 
-    @TypeORM.Column({ nullable: false, type: 'boolean' })
-    is_public: boolean;
+    @TypeORM.Column({ name: 'is_public', nullable: false, type: 'boolean' })
+    isPublic: boolean;
 
-    @TypeORM.Column({ nullable: false, type: 'integer'})
-    user_id: number;
+    @TypeORM.Column({ name: 'user_id', nullable: false, type: 'integer'})
+    userId: number;
 
     publisher?: User;
     content?: ProblemContent;
@@ -37,9 +37,9 @@ class Problem extends Model {
     }
 
     async loadPublisher() {
-        if (!this.publisher && this.user_id !== undefined) {
+        if (!this.publisher && this.userId !== undefined) {
             this.publisher = await User.findOne({
-                where: { user_id: this.user_id }
+                where: { userId: this.userId }
             });
         }
     }
@@ -47,20 +47,20 @@ class Problem extends Model {
     async loadContent() {
         if (!this.content) {
             this.content = await ProblemContent.findOne({
-                where: { problem_id: this.problem_id }
+                where: { problemId: this.problemId }
             });
         }
     }
 
     static async fromPid(pid: number) : Promise<Problem> {
         return Problem.findOne({
-            where: { problem_id: pid }
+            where: { problemId: pid }
         });
     }
 
     static async findPublic() : Promise<Problem[]> {
         return Problem.find({
-            where: { is_public: true }
+            where: { isPublic: true }
         });
     }
 }

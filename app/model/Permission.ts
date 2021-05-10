@@ -3,17 +3,17 @@ import { Model } from './definition';
 
 @TypeORM.Entity('permission')
 class Permission extends Model {
-    @TypeORM.PrimaryGeneratedColumn()
+    @TypeORM.PrimaryGeneratedColumn({ name: 'id' })
     id: number;
 
-    @TypeORM.Column({ type: 'integer' })
-    permission_id: string;
+    @TypeORM.Column({ name: 'permission_id', type: 'integer' })
+    permissionId: string;
 
-    @TypeORM.Column({ type: 'integer' })
-    role_id: string;
+    @TypeORM.Column({ name: 'role_id', type: 'integer' })
+    roleId: string;
 
-    @TypeORM.Column({ type: 'bool' })
-    has_permission: boolean;
+    @TypeORM.Column({ name: 'has_permission', type: 'bool' })
+    hasPermission: boolean;
 }
 
 export default Permission;

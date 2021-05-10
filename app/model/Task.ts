@@ -9,22 +9,22 @@ enum TaskStatus {
 
 @TypeORM.Entity('task')
 class Task extends Model {
-    @TypeORM.PrimaryGeneratedColumn()
-    task_id: number;
+    @TypeORM.PrimaryGeneratedColumn({ name: 'task_id' })
+    taskId: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
-    added_time: number;
+    @TypeORM.Column({ name: 'time',nullable: false, type: 'integer' })
+    time: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
+    @TypeORM.Column({ name: 'status', nullable: false, type: 'integer' })
     status: TaskStatus;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
-    submission_id: number;
+    @TypeORM.Column({ name: 'submission_id', nullable: false, type: 'integer' })
+    submissionId: number;
 
-    @TypeORM.Column({ nullable: false, type: 'integer' })
-    problem_id: number;
+    @TypeORM.Column({ name: 'problem_id', nullable: false, type: 'integer' })
+    problemId: number;
 
-    @TypeORM.Column({ nullable: false, type: 'varchar', length: 16 })
+    @TypeORM.Column({ name: 'language', nullable: false, type: 'varchar', length: 16 })
     language: string;
 
     private static lock: boolean = false;
@@ -37,7 +37,7 @@ class Task extends Model {
             this.lock = true;
             const result = await this.findOne({
                 where: { status: TaskStatus.WAITING },
-                order: { added_time: 'ASC' }
+                order: { time: 'ASC' }
             });
             if (result) {
                 result.status = TaskStatus.PROCESSING;
@@ -49,7 +49,7 @@ class Task extends Model {
         else {
             return await this.findOne({
                 where: { status: TaskStatus.WAITING },
-                order: { added_time: 'ASC' }
+                order: { time: 'ASC' }
             });
         }
     }
